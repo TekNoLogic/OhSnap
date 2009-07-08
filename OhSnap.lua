@@ -168,7 +168,7 @@ local function unitscan(unit)
         local guid = UnitGUID(unit)
 
         -- If the spell is on the given unit, and its not already done
-        if UnitAura(unit, spellname) then
+        if not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
             if not done[guid][spellname] then
                 local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
                 local r,g,b = classcolor.r,classcolor.g,classcolor.b
