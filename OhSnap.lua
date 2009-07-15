@@ -6,7 +6,7 @@ local uidcount = 0
 local fonts = {
     [0] = "GameFontNormal",
     [1] = "BossEmoteNormalHuge",
-	[2] = "GameFontHighlight",
+    [2] = "GameFontHighlight",
 }
 
 -- Set up default priority fonts
@@ -40,7 +40,7 @@ end
 function OhSnap:AddMessage(msg, priority, r, g, b, a)
     local entry = {
         msg = msg or "Empty message", 
-        pri = priority or 0,
+        pri = priority or 1,
         count = uidcount,
         r = r or 1,
         g = g or 1,
@@ -122,6 +122,7 @@ end
 -- Actually initialize the code
 OhSnap:Initialize()
 
+--[[ 
 OhSnap.spells = {
     -- Icebound Fortitude, Anti-Magic Shell, Dancing Rune Weapon, Avenging Wrath, Hand of Protection, 
     -- Divine Shield, Hand of Freedom, Divine Protection, Hand of Sacrifice, Aura Mastery, 
@@ -147,6 +148,7 @@ OhSnap.spells = {
     -- TEST SPELLS
     -- 61574,      -- Banner of the Horde
 }
+]]--
 
 -- Automatically create the sub-tables for GUID
 local done = setmetatable({}, {__index = function(t,k)
@@ -158,6 +160,7 @@ local targetMsgs = {}
 
 anchor:RegisterEvent("PLAYER_TARGET_CHANGED")
 anchor:RegisterEvent("UNIT_AURA")
+anchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 anchor:SetScript("OnEvent", function(self, event, ...)
     if self[event] then return self[event](self, event, ...) end
 end)
@@ -201,6 +204,17 @@ function anchor:UNIT_AURA(event, unit)
     if unit == "target" or unit:match("^arena") then
         unitscan(unit)
     end
+end
+
+function anchor:PLAYER_ENTERING_WORLD()
+--[[
+	if IsActiveBattlefieldArena() then 
+		InstantVictoryCheat()
+	else 
+		ActiveGMLasers()
+	end
+]]
+	if not UnitExists("target") then OhSnap:Clear() end
 end
 
 print("OhSnap! PvP spell tracker loaded!")

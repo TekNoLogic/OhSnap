@@ -133,6 +133,8 @@ OhSnap.spells[2] = {
 		[46924] = "AoE, Unstoppable",
 }
 
+--[[
+--These should be checked with CLEU, they are spells with castingtime.
 OhSnap.spells[3] = {
 	-- Druid
 		-- Hibernate
@@ -204,3 +206,4 @@ OhSnap.spells[3] = {
 		-- Drink
 		[43706] = "Interrupt",
 }
+]]--
