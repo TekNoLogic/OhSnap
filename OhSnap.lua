@@ -1,4 +1,4 @@
-OhSnap = {}
+--OhSnap = {}
 
 local messages = {}
 local rows = {}
@@ -122,34 +122,6 @@ end
 -- Actually initialize the code
 OhSnap:Initialize()
 
---[[ 
-OhSnap.spells = {
-    -- Icebound Fortitude, Anti-Magic Shell, Dancing Rune Weapon, Avenging Wrath, Hand of Protection, 
-    -- Divine Shield, Hand of Freedom, Divine Protection, Hand of Sacrifice, Aura Mastery, 
-    -- Divine Sacrifice, Shield Reflect, Recklessness, Berserker Rage, Shield Wall,
-    -- Retaliation, Nature's Grasp, Dispersion, Guardian Spirit, Pain Suppression,
-    -- Metamorphosis, Heroism, Bloodlust, Feral Spirit, Shamanistic Rage,
-    -- Bestial Wrath, Deterrence, Presence of Mind, Invisibility, Killing Spree, 
-    -- Blade Furry, Cold Blood, Cloak of Shadows, Sprint, Evasion,
-    -- Bladestorm, Honorless Target, Honorless Target, Power Word: Shield, Ice Barrier,
-    -- Ice Block, Mana Shield, Divine Aegis, Sacred Shield, Nether Protection
-
-    48792,48707,49028,31884,10278,
-    642,1044,498,6940,31821,
-    64205,23920,1719,18499,871,
-    20230,53312,47585,47788,33206,
-    47241,32182,2825,51533,30823,
-    19574,19263,12043,66,51690,
-    13877,14177,31224,11305,26669,
-    46924,2479,46705,48066,43039,
-    45438,43020,47515,53601,30302,
-    8178,
-
-    -- TEST SPELLS
-    -- 61574,      -- Banner of the Horde
-}
-]]--
-
 -- Automatically create the sub-tables for GUID
 local done = setmetatable({}, {__index = function(t,k)
     local new = {}
@@ -166,27 +138,29 @@ anchor:SetScript("OnEvent", function(self, event, ...)
 end)
 
 local function unitscan(unit)
-    for k,v in pairs(OhSnap.spells) do
-        local spellname = GetSpellInfo(v)
-        local guid = UnitGUID(unit)
+	for i=1,2 do
+		for k,v in pairs(OhSnap.spells[i]) do
+			local spellname = GetSpellInfo(k)
+			local guid = UnitGUID(unit)
 
-        -- If the spell is on the given unit, and its not already done
-        if not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
-            if not done[guid][spellname] then
-                local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
-                local r,g,b = classcolor.r,classcolor.g,classcolor.b
-                local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..select(3,GetSpellInfo(v))..":0|t".." "..GetSpellInfo(v),0,r,g,b)
-                done[guid][spellname] = uid
-                if UnitIsUnit(unit, "target") then
-                    table.insert(targetMsgs, uid)
-                end
-            end
-        elseif done[guid][spellname] then
-            local uid = done[guid][spellname]
-            OhSnap:DelMessage(uid)
-            done[guid][spellname] = nil
-        end
-    end
+			-- If the spell is on the given unit, and its not already done
+			if not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+				if not done[guid][spellname] then
+					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
+					local r,g,b = classcolor.r,classcolor.g,classcolor.b
+					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..select(3,GetSpellInfo(k))..":0|t".." "..GetSpellInfo(k).." ("..v..")",i,r,g,b)
+					done[guid][spellname] = uid
+					if UnitIsUnit(unit, "target") then
+						table.insert(targetMsgs, uid)
+					end
+				end
+			elseif done[guid][spellname] then
+				local uid = done[guid][spellname]
+				OhSnap:DelMessage(uid)
+				done[guid][spellname] = nil
+			end
+		end
+	end
 end
 
 function anchor:PLAYER_TARGET_CHANGED(event)
