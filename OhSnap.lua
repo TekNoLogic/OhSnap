@@ -4,9 +4,9 @@ local messages = {}
 local rows = {}
 local uidcount = 0
 local fonts = {
-    [0] = "GameFontNormal",
-    [1] = "BossEmoteNormalHuge",
-    [2] = "GameFontHighlight",
+    [1] = "GameFontNormal",
+    [2] = "BossEmoteNormalHuge",
+    [3] = "GameFontHighlight",
 }
 
 -- Set up default priority fonts
