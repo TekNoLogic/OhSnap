@@ -5,8 +5,9 @@ local rows = {}
 local uidcount = 0
 local fonts = {
     [1] = "GameFontNormal",
-    [2] = "BossEmoteNormalHuge",
-    [3] = "GameFontHighlight",
+    [2] = "GameFontNormalLarge",
+	[3] = "WorldMapTextFont",
+--	[3] = "BossEmoteNormalHuge",
 }
 
 -- Set up default priority fonts
@@ -148,7 +149,7 @@ local function unitscan(unit)
 				if not done[guid][spellname] then
 					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 					local r,g,b = classcolor.r,classcolor.g,classcolor.b
-					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..select(3,GetSpellInfo(k))..":0|t".." "..GetSpellInfo(k).." ("..v..")",i,r,g,b)
+					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t".." "..UnitAura(unit, spellname).." ("..v..")",i,r,g,b)
 					done[guid][spellname] = uid
 					if UnitIsUnit(unit, "target") then
 						table.insert(targetMsgs, uid)
