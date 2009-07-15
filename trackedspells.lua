@@ -1,6 +1,6 @@
 OhSnap = {}
 OhSnap.spells = {}
-OhSnap.spells.0 = {
+OhSnap.spells[1] = {
 	-- Death Knight
 		-- Army of the Dead
 		[42650] = "Braiiiins!",
@@ -92,7 +92,7 @@ OhSnap.spells.0 = {
 	--[61573] = "Target dummy!",      -- Banner of the Alliance
 }
 
-OhSnap.spells.1 = {
+OhSnap.spells[2] = {
 	-- Druid
 		-- Dash
 		[33357] = "+Speed",
@@ -133,7 +133,7 @@ OhSnap.spells.1 = {
 		[46924] = "AoE, Unstoppable",
 }
 
-OhSnap.spells.2 = {
+OhSnap.spells[3] = {
 	-- Druid
 		-- Hibernate
 		[18658] = "(you)",
