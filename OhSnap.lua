@@ -84,7 +84,7 @@ function OhSnap:Update()
     -- Create enough frames, if necessary
     for i=#rows + 1, #messages, 1 do
         local row = CreateFrame("Frame")
-        row.text = row:CreateFontString(nil, "OVERLAY")
+        row.text = row:CreateFontString(nil, "HIGHLIGHT")
         row.text:SetPoint("CENTER", 0, 0)
 
         row.text:SetJustifyH("CENTER")
