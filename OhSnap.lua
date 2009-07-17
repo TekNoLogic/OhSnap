@@ -4,8 +4,8 @@ local messages = {}
 local rows = {}
 local uidcount = 0
 local fonts = {
-    [1] = "GameFontNormal",
-    [2] = "GameFontNormalLarge",
+	[1] = "GameFontNormal",
+	[2] = "GameFontNormalLarge",
 	[3] = "WorldMapTextFont",
 --	[3] = "BossEmoteNormalHuge",
 }
@@ -84,7 +84,7 @@ function OhSnap:Update()
     -- Create enough frames, if necessary
     for i=#rows + 1, #messages, 1 do
         local row = CreateFrame("Frame")
-        row.text = row:CreateFontString(nil, "HIGHLIGHT")
+        row.text = row:CreateFontString(nil, "HIGHLIGHT") -- "OVERLAY"
         row.text:SetPoint("CENTER", 0, 0)
 
         row.text:SetJustifyH("CENTER")
@@ -192,4 +192,19 @@ function anchor:PLAYER_ENTERING_WORLD()
 	if not UnitExists("target") then OhSnap:Clear() end
 end
 
+--[[ CLEU support
+
+local player = UnitGUID("player")
+anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	
+function anchor:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, minievent, guidsource, source, sourceflags, guidtarget, target, targetflags, ...)
+	if minievent == "SPELL_CAST_START" and guidtarget == player then
+		--[[ Not sure how to catch the spell being casted... ]]--
+		--name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("unit")
+		--name, subText, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo("unit")
+		--print(spellname..	" on you!")
+	end
+end
+
+]]--
 print("OhSnap! PvP spell tracker loaded!")
