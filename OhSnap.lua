@@ -17,6 +17,7 @@ setmetatable(fonts, {__index = function(t,k) return rawget(t, 0) end})
 local anchor = CreateFrame("Frame", "OhSnapAnchor", UIParent)
 
 function OhSnap:Initialize()
+	anchor:SetFrameStrata("HIGH")
     anchor:SetHeight(30)
     anchor:SetWidth(150)
     anchor:SetBackdrop(GameTooltip:GetBackdrop())
@@ -85,6 +86,7 @@ function OhSnap:Update()
     -- Create enough frames, if necessary
     for i=#rows + 1, #messages, 1 do
         local row = CreateFrame("Frame")
+		row:SetFrameStrata("HIGH")
         row.text = row:CreateFontString(nil, "OVERLAY") -- "OVERLAY"
         row.text:SetPoint("CENTER", 0, 0)
 
