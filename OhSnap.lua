@@ -199,7 +199,7 @@ anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	
 function anchor:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, minievent, guidsource, source, sourceflags, guidtarget, target, targetflags, ...)
 	if minievent == "SPELL_CAST_START" and guidtarget == player then
-		--[[ Not sure how to catch the spell being casted... ]]--
+		-- Not sure how to catch the spell being casted...
 		--name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("unit")
 		--name, subText, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo("unit")
 		--print(spellname..	" on you!")
