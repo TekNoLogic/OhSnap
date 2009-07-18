@@ -214,7 +214,6 @@ function anchor:UNIT_SPELLCAST_START(event,unit)
 		for k,v in pairs(OhSnap.spells[3]) do
 			local spellname = GetSpellInfo(k)
 			local guid = UnitGUID(unit)
-			print(guid)
 			local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
 			--if not UnitIsFriend("player", unit) and spellname == name then -- this line does not work in duels ;/
 			if spellname == name then
