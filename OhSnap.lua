@@ -164,6 +164,7 @@ local function unitscan(unit)
 	end
 end
 
+local targetFOO
 function anchor:PLAYER_TARGET_CHANGED(event)
     for idx,uid in ipairs(targetMsgs) do
         OhSnap:DelMessage(uid)
@@ -172,6 +173,7 @@ function anchor:PLAYER_TARGET_CHANGED(event)
 
     if UnitExists("target") and not UnitIsFriend("player", "target") then
         unitscan("target")
+		targetFOO = UnitGUID("target")
     end
 end
 
@@ -192,19 +194,21 @@ function anchor:PLAYER_ENTERING_WORLD()
 	if not UnitExists("target") then OhSnap:Clear() end
 end
 
---[[ CLEU support
+local function checktarget(guid)
+	-- needs arena-unit check
+    if guid == targetFOO then return true end
+end
 
 local player = UnitGUID("player")
 anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	
 function anchor:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, minievent, guidsource, source, sourceflags, guidtarget, target, targetflags, ...)
-	if minievent == "SPELL_CAST_START" and guidtarget == player then
-		-- Not sure how to catch the spell being casted...
-		--name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("unit")
-		--name, subText, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo("unit")
-		--print(spellname..	" on you!")
-	end
+    if minievent == "SPELL_CAST_START" and guidtarget == player then
+        if checktarget(guidsource) then
+            local spellID,spellName = ...
+            print(spellName.. " on you!")
+        end
+    end
 end
 
-]]--
 print("OhSnap! PvP spell tracker loaded!")
