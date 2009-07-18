@@ -28,6 +28,7 @@ function OhSnap:Initialize()
     anchor:SetPoint("CENTER", 0, 300)
     anchor:EnableMouse(true)
     anchor:SetMovable(true)
+	anchor:Hide()
     anchor:SetScript("OnMouseDown", function(self, button)
         self:StartMoving()
     end)
@@ -247,4 +248,13 @@ f:SetScript("OnEvent",function(self,event,unit,spellname)
 		end
 	end
 end)
+
+SLASH_OhSnap1 = "/ohsnap"
+SlashCmdList["OhSnap"] = function(name) 
+	if OhSnapAnchor:IsVisible() then
+		OhSnapAnchor:Hide()
+	else
+		OhSnapAnchor:Show()
+	end
+end
 print("OhSnap! PvP spell tracker loaded!")
