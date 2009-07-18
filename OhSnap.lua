@@ -84,7 +84,7 @@ function OhSnap:Update()
     -- Create enough frames, if necessary
     for i=#rows + 1, #messages, 1 do
         local row = CreateFrame("Frame")
-        row.text = row:CreateFontString(nil, "HIGHLIGHT") -- "OVERLAY"
+        row.text = row:CreateFontString(nil, "OVERLAY") -- "OVERLAY"
         row.text:SetPoint("CENTER", 0, 0)
 
         row.text:SetJustifyH("CENTER")
@@ -149,7 +149,7 @@ local function unitscan(unit)
 				if not done[guid][spellname] then
 					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 					local r,g,b = classcolor.r,classcolor.g,classcolor.b
-					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t".." "..UnitAura(unit, spellname).." ("..v..")",i,r,g,b)
+					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..UnitAura(unit, spellname).." ("..v..")",i,r,g,b)
 					done[guid][spellname] = uid
 					if UnitIsUnit(unit, "target") then
 						table.insert(targetMsgs, uid)
@@ -164,7 +164,6 @@ local function unitscan(unit)
 	end
 end
 
-local targetFOO
 function anchor:PLAYER_TARGET_CHANGED(event)
     for idx,uid in ipairs(targetMsgs) do
         OhSnap:DelMessage(uid)
@@ -173,7 +172,6 @@ function anchor:PLAYER_TARGET_CHANGED(event)
 
     if UnitExists("target") and not UnitIsFriend("player", "target") then
         unitscan("target")
-		targetFOO = UnitGUID("target")
     end
 end
 
@@ -184,31 +182,59 @@ function anchor:UNIT_AURA(event, unit)
 end
 
 function anchor:PLAYER_ENTERING_WORLD()
---[[
-	if IsActiveBattlefieldArena() then 
-		InstantVictoryCheat()
-	else 
-		ActiveGMLasers()
-	end
-]]
 	if not UnitExists("target") then OhSnap:Clear() end
 end
 
-local function checktarget(guid)
-	-- needs arena-unit check
-    if guid == targetFOO then return true end
+local function validtarget(unit)
+	if unit == "target" or unit:match("^arena") then return true end
 end
 
-local player = UnitGUID("player")
-anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	
-function anchor:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, minievent, guidsource, source, sourceflags, guidtarget, target, targetflags, ...)
-    if minievent == "SPELL_CAST_START" and guidtarget == player then
-        if checktarget(guidsource) then
-            local spellID,spellName = ...
-            print(spellName.. " on you!")
-        end
-    end
+local function targettargetcheck()
+	if IsActiveBattlefieldArena() then
+		if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then return true end
+	else
+		if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then return true end
+	end
 end
+
+local spellalert = {}
+anchor:RegisterEvent("UNIT_SPELLCAST_START")
+function anchor:UNIT_SPELLCAST_START(event,unit)
+    if validtarget(unit) and targettargetcheck() then
+		for k,v in pairs(OhSnap.spells[3]) do
+			local spellname = GetSpellInfo(k)
+			local guid = UnitGUID(unit)
+			local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
+			if not UnitIsFriend("player", unit) and spellname == name then
+				if not spellalert[guid][spellname] then
+					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
+					local r,g,b = classcolor.r,classcolor.g,classcolor.b
+					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..texture..":0|t "..name.." -> "..UnitName("targettarget"),3,r,g,b)
+					spellalert[guid][spellname] = uid
+					if UnitIsUnit(unit, "target") then
+						table.insert(targetMsgs, uid)
+					end
+				end
+			end
+		end
+	end
+end
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+f:RegisterEvent("UNIT_SPELLCAST_FAILED")
+f:RegisterEvent("UNIT_SPELLCAST_STOP")
+f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+
+f:SetScript("OnEvent",function(self,event,unit,spellname)
+	if validtarget(unit) and targettargetcheck() then
+		local guid = UnitGUID(unit)
+		if spellalert[guid][spellname] then
+			local uid = spellalert[guid][spellname]
+			OhSnap:DelMessage(uid)
+			spellalert[guid][spellname] = nil
+		end
+	end
+end)
 
 print("OhSnap! PvP spell tracker loaded!")

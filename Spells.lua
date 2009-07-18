@@ -131,10 +131,13 @@ OhSnap.spells[2] = {
 		[20230] = "Returns damage",
 		-- Bladestorm
 		[46924] = "AoE, Unstoppable",
+		
+	-- Misc
+		-- Drink
+		[43706] = "Interrupt",
 }
 
---[[
---These should be checked with CLEU, they are spells with castingtime.
+--These are spells with castingtime.
 OhSnap.spells[3] = {
 	-- Druid
 		-- Hibernate
@@ -201,9 +204,4 @@ OhSnap.spells[3] = {
 		[30146] = "",
 		-- Howl of Terror
 		[47857] = "(you)",
-
-	-- Misc
-		-- Drink
-		[43706] = "Interrupt",
 }
-]]--
