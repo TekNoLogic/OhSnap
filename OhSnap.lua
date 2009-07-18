@@ -187,7 +187,6 @@ end
 
 local function validtarget(unit)
 	if unit == "target" or unit:match("^arena") then 
-	ChatFrame3:AddMessage("valid target")
 	return true
 	end
 end
@@ -195,18 +194,20 @@ end
 local function targettargetcheck()
 	if IsActiveBattlefieldArena() then
 		if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then 
-			ChatFrame3:AddMessage("valid arena targettarget")
 			return true
 		end
 	else
 		if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then
-			ChatFrame3:AddMessage("valid BG target")
 			return true
 		end
 	end
 end
 
-local spellalert = {}
+local spellalert = setmetatable({}, {__index = function(t,k)
+    local new = {}
+    rawset(t, k, new)
+    return new
+end})
 anchor:RegisterEvent("UNIT_SPELLCAST_START")
 function anchor:UNIT_SPELLCAST_START(event,unit)
     if validtarget(unit) and targettargetcheck() then
@@ -217,7 +218,6 @@ function anchor:UNIT_SPELLCAST_START(event,unit)
 			local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
 			--if not UnitIsFriend("player", unit) and spellname == name then -- this line does not work in duels ;/
 			if spellname == name then
-				if not spellalert[guid] then spellalert[guid] = {} end
 				if not spellalert[guid][spellname] then
 					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 					local r,g,b = classcolor.r,classcolor.g,classcolor.b
