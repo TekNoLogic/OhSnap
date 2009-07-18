@@ -186,14 +186,23 @@ function anchor:PLAYER_ENTERING_WORLD()
 end
 
 local function validtarget(unit)
-	if unit == "target" or unit:match("^arena") then return true end
+	if unit == "target" or unit:match("^arena") then 
+	ChatFrame3:AddMessage("valid target")
+	return true
+	end
 end
 
 local function targettargetcheck()
 	if IsActiveBattlefieldArena() then
-		if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then return true end
+		if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then 
+			ChatFrame3:AddMessage("valid arena targettarget")
+			return true
+		end
 	else
-		if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then return true end
+		if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then
+			ChatFrame3:AddMessage("valid BG target")
+			return true
+		end
 	end
 end
 
@@ -206,6 +215,9 @@ function anchor:UNIT_SPELLCAST_START(event,unit)
 			local guid = UnitGUID(unit)
 			local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
 			if not UnitIsFriend("player", unit) and spellname == name then
+				if not spellalert[guid] then
+					spellalert[guid] = {}
+				end
 				if not spellalert[guid][spellname] then
 					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 					local r,g,b = classcolor.r,classcolor.g,classcolor.b
@@ -229,7 +241,7 @@ f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 f:SetScript("OnEvent",function(self,event,unit,spellname)
 	if validtarget(unit) and targettargetcheck() then
 		local guid = UnitGUID(unit)
-		if spellalert[guid][spellname] then
+		if spellalert[guid] and spellalert[guid][spellname] then
 			local uid = spellalert[guid][spellname]
 			OhSnap:DelMessage(uid)
 			spellalert[guid][spellname] = nil
