@@ -3,11 +3,11 @@
 local messages = {}
 local rows = {}
 local uidcount = 0
+local font = {"WorldMapTextFont","Fonts\\FRIZQT__.TTF"}
 local fonts = {
-	[1] = "GameFontNormal",
-	[2] = "GameFontNormalLarge",
-	[3] = "WorldMapTextFont",
---	[3] = "BossEmoteNormalHuge",
+	[1] = {12,"OUTLINE"},
+	[2] = {18,"OUTLINE"},
+	[3] = {32,"OUTLINE, THICKOUTLINE"},
 }
 
 -- Set up default priority fonts
@@ -111,7 +111,8 @@ function OhSnap:Update()
 
         row:SetHeight(20)
         row:SetWidth(250)
-        row.text:SetFontObject(fonts[entry.pri])
+        row.text:SetFontObject(font[1])
+		row.text:SetFont(font[2],fonts[entry.pri][1],fonts[entry.pri][2])
         row.text:SetText(entry.msg)
         row.text:SetTextColor(entry.r, entry.g, entry.b, entry.a)
         row:Show()
@@ -251,12 +252,21 @@ f:SetScript("OnEvent",function(self,event,unit,spellname)
 	end
 end)
 
+local icon = "|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t"
+local FOO_1,FOO_2,FOO_3
+
 SLASH_OhSnap1 = "/ohsnap"
 SlashCmdList["OhSnap"] = function(name) 
 	if OhSnapAnchor:IsVisible() then
 		OhSnapAnchor:Hide()
+		OhSnap:DelMessage(FOO_1)
+		OhSnap:DelMessage(FOO_2)
+		OhSnap:DelMessage(FOO_3)		
 	else
 		OhSnapAnchor:Show()
+		FOO_1 = OhSnap:AddMessage(icon.." Noticeable spells (Buffs)",1,1,1,1)
+		FOO_2 = OhSnap:AddMessage(icon.." Annoying spells (Buffs)",2,1,1,0)
+		FOO_3 = OhSnap:AddMessage(icon.." Dangerous spells (Casted)",3,1,0,0)
 	end
 end
 print("OhSnap! PvP spell tracker loaded!")
