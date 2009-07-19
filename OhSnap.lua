@@ -189,84 +189,83 @@ function anchor:PLAYER_ENTERING_WORLD()
 	if not UnitExists("target") then OhSnap:Clear() end
 end
 
-local function validtarget(unit)
-	if unit == "target" or unit:match("^arena") then 
-	return true
-	end
-end
+-- New stuff starts here, fix it jnwhiteh... Seriously. Do it. Do it. Do it. http://www.youtube.com/watch?v=JoqDYcCDOTg
 
-local function targettargetcheck()
-	if IsActiveBattlefieldArena() then
-		if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then 
+		local function validtarget(unit)
+			if unit == "target" or unit:match("^arena") then 
 			return true
+			end
 		end
-	else
-		if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then
-			return true
-		end
-	end
-end
 
-local spellalert = setmetatable({}, {__index = function(t,k)
-    local new = {}
-    rawset(t, k, new)
-    return new
-end})
-anchor:RegisterEvent("UNIT_SPELLCAST_START")
-function anchor:UNIT_SPELLCAST_START(event,unit)
-    if validtarget(unit) and targettargetcheck() then
-		for k,v in pairs(OhSnap.spells[3]) do
-			local spellname = GetSpellInfo(k)
-			local guid = UnitGUID(unit)
-			local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
-			--if not UnitIsFriend("player", unit) and spellname == name then -- this line does not work in duels ;/
-			if spellname == name then
-				if not spellalert[guid][spellname] then
-					local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
-					local r,g,b = classcolor.r,classcolor.g,classcolor.b
-					local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..texture..":0|t "..name.." -> "..UnitName("targettarget"),3,r,g,b)
-					spellalert[guid][spellname] = uid
-					if UnitIsUnit(unit, "target") then
-						table.insert(targetMsgs, uid)
+		local function targettargetcheck()
+			if IsActiveBattlefieldArena() then
+				if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then 
+					return true
+				end
+			else
+				if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then
+					return true
+				end
+			end
+		end
+
+		local spellalert = setmetatable({}, {__index = function(t,k)
+			local new = {}
+			rawset(t, k, new)
+			return new
+		end})
+		anchor:RegisterEvent("UNIT_SPELLCAST_START")
+		function anchor:UNIT_SPELLCAST_START(event,unit)
+			if validtarget(unit) and targettargetcheck() then
+				for k,v in pairs(OhSnap.spells[3]) do
+					local spellname = GetSpellInfo(k)
+					local guid = UnitGUID(unit)
+					local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
+					--if not UnitIsFriend("player", unit) and spellname == name then -- this line does not work in duels ;/
+					if spellname == name then
+						if not spellalert[guid][spellname] then
+							local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
+							local r,g,b = classcolor.r,classcolor.g,classcolor.b
+							local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..texture..":0|t "..name.." -> "..UnitName("targettarget"),3,r,g,b)
+							spellalert[guid][spellname] = uid
+							if UnitIsUnit(unit, "target") then
+								table.insert(targetMsgs, uid)
+							end
+						end
 					end
 				end
 			end
 		end
-	end
-end
 
-local f = CreateFrame("Frame")
-f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-f:RegisterEvent("UNIT_SPELLCAST_FAILED")
-f:RegisterEvent("UNIT_SPELLCAST_STOP")
-f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+		local f = CreateFrame("Frame")
+		f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+		f:RegisterEvent("UNIT_SPELLCAST_FAILED")
+		f:RegisterEvent("UNIT_SPELLCAST_STOP")
+		f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 
-f:SetScript("OnEvent",function(self,event,unit,spellname)
-	if validtarget(unit) and targettargetcheck() then
-		local guid = UnitGUID(unit)
-		if spellalert[guid] and spellalert[guid][spellname] then
-			local uid = spellalert[guid][spellname]
-			OhSnap:DelMessage(uid)
-			spellalert[guid][spellname] = nil
+		f:SetScript("OnEvent",function(self,event,unit,spellname)
+			if validtarget(unit) and targettargetcheck() then
+				local guid = UnitGUID(unit)
+				if spellalert[guid] and spellalert[guid][spellname] then
+					local uid = spellalert[guid][spellname]
+					OhSnap:DelMessage(uid)
+					spellalert[guid][spellname] = nil
+				end
+			end
+		end)
+
+		local TestMessage1,TestMessage2,TestMessage3
+		SLASH_OhSnap1 = "/ohsnap"
+		SlashCmdList["OhSnap"] = function(name) 
+			if OhSnapAnchor:IsVisible() then
+				OhSnapAnchor:Hide()
+				OhSnap:DelMessage(TestMessage1)
+				OhSnap:DelMessage(TestMessage2)
+				OhSnap:DelMessage(TestMessage3)		
+			else
+				OhSnapAnchor:Show()
+				TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable spells (Buffs)",1,1,1,1)
+				TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying spells (Buffs)",2,1,1,0)
+				TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells (Casted)",3,1,0,0)
+			end
 		end
-	end
-end)
-
-local icon = "|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t"
-local FOO_1,FOO_2,FOO_3
-
-SLASH_OhSnap1 = "/ohsnap"
-SlashCmdList["OhSnap"] = function(name) 
-	if OhSnapAnchor:IsVisible() then
-		OhSnapAnchor:Hide()
-		OhSnap:DelMessage(FOO_1)
-		OhSnap:DelMessage(FOO_2)
-		OhSnap:DelMessage(FOO_3)		
-	else
-		OhSnapAnchor:Show()
-		FOO_1 = OhSnap:AddMessage(icon.." Noticeable spells (Buffs)",1,1,1,1)
-		FOO_2 = OhSnap:AddMessage(icon.." Annoying spells (Buffs)",2,1,1,0)
-		FOO_3 = OhSnap:AddMessage(icon.." Dangerous spells (Casted)",3,1,0,0)
-	end
-end
-print("OhSnap! PvP spell tracker loaded!")
