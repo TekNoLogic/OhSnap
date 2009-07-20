@@ -3,205 +3,211 @@ OhSnap.spells = {}
 OhSnap.spells[1] = {
 	-- Death Knight
 		-- Army of the Dead
-		[42650] = "Braiiiins!",
+		[42650] = {msg = "Braiiiins!", class = "DEATHKNIGHT"},
 		-- Anti-Magic Shell
-		[48707] = "75% Magic Shield",
+		[48707] = {msg = "75% Magic Shield", class = "DEATHKNIGHT"},
 		-- Icebound Fortitude
-		[48792] = "20% Shield",
+		[48792] = {msg = "20% Shield", class = "DEATHKNIGHT"},
 		-- Hysteria
-		[49016] = "+20% Damage",
+		[49016] = {msg = "+20% Damage"},
 		-- Dancing Rune Weapon
-		[49028] = "",
+		[49028] = {class = "DEATHKNIGHT"},
 		-- Lichborne
-		[49039] = "Fear Immune, Shackleable",
+		[49039] = {msg = "Fear Immune, Shackleable", class = "DEATHKNIGHT"},
 		-- Deathchill
-		[49796] = "100% Crit",
+		[49796] = {msg = "100% Crit", class = "DEATHKNIGHT"},
 	-- Hunter
 		-- Deterrence
-		[19263] = "100% Parry, 100% Deflect",
+		[19263] = {msg = "100% Parry, 100% Deflect", class = "HUNTER"},
 	-- Mage
 		-- Mana Shield
-		[43020] = "Immune, Breakable",
+		[43020] = {msg = "Absorbs damage, Breakable", class = "MAGE"},
 		-- Ice Barrier
-		[43039] = "Immune, Breakable",
+		[43039] = {msg = "Absorbs damage, Breakable", class = "MAGE"},
 	-- Paladin
 		-- Divine Protection
-		[498] = "50% Shield",
+		[498] = {msg = "50% Shield"},
 		-- Hand of Freedom
-		[1044] = "Snare Immune",
+		[1044] = {msg = "Snare Immune"},
 		-- Hand of Sacrifice
-		[6940] = "30% Shield",
+		[6940] = {msg = "30% Shield"},
 		-- Aura Mastery
-		[31821] = "Silence Immune",
+		[31821] = {msg = "Silence Immune", class = "PALADIN"},
 		-- Avenging Wrath
-		[31884] = "+20% Damage, Stealable",
+		[31884] = {msg = "+20% Damage, Stealable", class = "PALADIN"},
 		-- Divine Aegis
-		[47515] = "Immune, Breakable",
+		[47515] = {msg = "Absorbs damage, Breakable"},
 		-- Sacred Shield
-		[53601] = "Immune, Breakable",
+		[53601] = {msg = "Absorbs damage, Breakable"},
 		-- Divine Sacrifice
-		[64205] = "30% Shield",
+		[64205] = {msg = "30% Shield"},
 	-- Priest
 		-- Fear Ward
-		[6346] = "Fear Immune",
+		[6346] = {msg = "Fear Immune"},
 		-- Pain Suppression
-		[33206] = "40% Shield",
+		[33206] = {msg = "40% Shield"},
 		-- Dispersion
-		[47585] = "90% Shield",
+		[47585] = {msg = "90% Shield", class = "PRIEST"},
 		-- Power Word: Shield
-		[48066] = "Immune, Breakable",
+		[48066] = {msg = "Absorbs damage, Breakable"},
 	-- Rogue
 		-- Killing Spree
-		[13877] = "AoE, +20% Haste",
+		[13877] = {msg = "AoE, +20% Haste", class = "ROGUE"},
 		-- Blade Flurry
-		[14177] = "100% Crit",
+		[14177] = {msg = "100% Crit", class = "ROGUE"},
 		-- Evasion
-		[26669] = "+50% Dodge, -25% Ranged",
+		[26669] = {msg = "+50% Dodge, -25% Ranged", class = "ROGUE"},
 		-- Cold Blood
-		[51690] = "+20% Damage",
+		[51690] = {msg = "+20% Damage", class = "ROGUE"},
 	-- Shaman
 		-- Grounding Totem Effect
-		[8178] = "Immune",
+		[8178] = {msg = "Grounded"},
 		-- Shamanistic Rage
-		[30823] = "30% Shield",
+		[30823] = {msg = "30% Shield", class = "SHAMAN"},
 	-- Warlock
 		-- Nether Protection
-		[30302] = "30% Magic Shield",
+		[30302] = {msg = "30% Magic Shield", class = "WARLOCK"},
 		-- Metamorphosis
-		[47241] = "+20% Damage, 600% Armor",
+		[47241] = {msg = "+20% Damage, 600% Armor", class = "WARLOCK"},
 		-- Sacrifice
-		[47986] = "Immune, Breakable",
+		[47986] = {msg = "Absorbs damage, Breakable", class = "WARLOCK"},
 	-- Warrior
-		-- Berserker Rage
-		[871] = "60% Shield",
-		-- Spell Reflection
-		[1719] = "100% Crit",
 		-- Shield Wall
-		[18499] = "CC Immune",
+		[871] = {msg = "60% Shield", class = "WARRIOR"},
 		-- Recklessness
-		[23920] = "",
+		[1719] = {msg = "100% Crit", class = "WARRIOR"},
+		-- Enrage
+		[13048] = {msg = "+10% Damage", class = "WARRIOR"},
+		-- Berserker Rage
+		[18499] = {msg = "CC Immune", class = "WARRIOR"},
 
 	-- Misc
 		-- Honorless Target
-		[2479] = "",
+		[2479] = {msg = "Do it."},
 		-- Honorless Target
-		[46705] = "",
-
-	-- TEST SPELLS
-	--[61574] = "Target dummy!",      -- Banner of the Horde
-	--[61573] = "Target dummy!",      -- Banner of the Alliance
+		[46705] = {msg = "Do it."},
 }
 
 OhSnap.spells[2] = {
 	-- Druid
 		-- Dash
-		[33357] = "+Speed",
+		[33357] = {msg = "+Speed", class = "DRUID"},
 		-- Nature's Grasp
-		[53312] = "Hit roots you",
+		[53312] = {msg = "Hit roots you", class = "DRUID"},
 	-- Hunter
 		-- Bestial Wrath
-		[19574] = "Unstoppable",
+		[19574] = {msg = "Unstoppable"},
 	-- Mage
 		-- Invisibility
-		[66] = "Disappearing",
+		[66] = {msg = "Disappearing", class = "MAGE"},
 		-- Presence of Mind
-		[12043] = "Instant cast",
+		[12043] = {msg = "Instant cast", class = "MAGE"},
 		-- Ice Block
-		[45438] = "Immune, Dispellable",
+		[45438] = {msg = "Immune, Dispellable", class = "MAGE"},
+		-- Blazing Speed
+		[31642] = {msg = "+Speed", class = "MAGE"},
 	-- Paladin
 		-- Divine Shield
-		[642] = "Immune, Dispellable",
+		[642] = {msg = "Immune, Dispellable", class = "PALADIN"},
 		-- Hand of Protection
-		[10278] = "Melee Immune, pacified",
+		[10278] = {msg = "Melee Immune, pacified"},
 	-- Priest
 		-- Guardian Spirit
-		[47788] = "Unkillable",
+		[47788] = {msg = "Unkillable", class = "PRIEST"},
 	-- Rogue
 		-- Sprint
-		[11305] = "+Speed",
+		[11305] = {msg = "+Speed", class = "ROGUE"},
 		-- Cloak of Shadows
-		[31224] = "90% Resist",
+		[31224] = {msg = "90% Resist", class = "ROGUE"},
 	-- Shaman
 		-- Bloodlust
-		[2825] = "30% Haste",
+		[2825] = {msg = "30% Haste"},
 		-- Heroism
-		[32182] = "30% Haste",
+		[32182] = {msg = "30% Haste"},
 	-- Warrior
 		-- Retaliation
-		[20230] = "Returns damage",
+		[20230] = {msg = "Returns damage", class = "WARRIOR"},
+		-- Spell Reflection
+		[23920] = {msg = "Reflect!", class = "WARRIOR"},
 		-- Bladestorm
-		[46924] = "AoE, Unstoppable",
+		[46924] = {msg = "AoE, Unstoppable", class = "WARRIOR"},
 		
 	-- Misc
 		-- Drink
-		[43706] = "Interrupt",
+		[43706] = {msg = "Gaining mana, Interrupt!"},
+		
+	-- TEST SPELLS
+		-- Banner of the Horde
+		[61574] = {msg = "For Gnomeregan!"},
+		-- Banner of the Alliance
+		[61573] = {msg = "For the Horde!"},
 }
 
 --These are spells with castingtime.
 OhSnap.spells[3] = {
 	-- Druid
 		-- Hibernate
-		[18658] = "(you)",
+		[18658] = {},
 		-- Cyclone
-		[33786] = "(you)",
+		[33786] = {},
 		-- Revive
-		[50763] = "(you)",
+		[50763] = {},
 		-- Entangling Roots
-		[53308] = "(you)",
+		[53308] = {},
 	-- Hunter
 		-- Revive Pet
-		[982] = "",
+		[982] = {},
 		-- Scare Beast
-		[14327] = "(you)",
+		[14327] = {},
 	-- Mage
 		-- Polymorph
-		[12825] = "(you)",
+		[12825] = {},
 		-- Polymorph: Turtle
-		[28271] = "(you)",
+		[28271] = {},
 		-- Polymorph: Pig
-		[28272] = "(you)",
+		[28272] = {},
 		-- Polymorph: Serpent
-		[61025] = "(you)",
+		[61025] = {},
 		-- Polymorph: Black Cat
-		[61305] = "(you)",
+		[61305] = {},
 		-- Polymorph: Rabbit
-		[61721] = "(you)",
+		[61721] = {},
 		-- Polymorph: Turkey
-		[61780] = "(you)",
+		[61780] = {},
 	-- Paladin
 		-- Redemption
-		[48950] = "(you)",
+		[48950] = {},
 	-- Priest
 		-- Mind Control
-		[605] = "(you)",
+		[605] = {},
 		-- Mana Burn
-		[8129] = "(you)",
+		[8129] = {},
 		-- Resurrection
-		[48171] = "(you)",
+		[48171] = {},
 	-- Shaman
 		-- Hex
-		[51514] = "(you)",
+		[51514] = {},
 		-- Feral Spirit
-		[51533] = "",
+		[51533] = {},
 	-- Warlock
 		-- Summon Imp
-		[688] = "",
+		[688] = {},
 		-- Summon Felhunter
-		[691] = "",
+		[691] = {},
 		-- Summon Voidwalker
-		[697] = "",
+		[697] = {},
 		-- Summon Succubus
-		[712] = "",
+		[712] = {},
 		-- Drain Mana
-		[5138] = "(you)",
+		[5138] = {},
 		-- Fear
-		[6215] = "(you)",
+		[6215] = {},
 		-- Banish
-		[17928] = "",
+		[17928] = {},
 		-- Drain Life
-		[18647] = "(you)",
+		[18647] = {},
 		-- Summon Felguard
-		[30146] = "",
+		[30146] = {},
 		-- Howl of Terror
-		[47857] = "(you)",
+		[47857] = {},
 }
