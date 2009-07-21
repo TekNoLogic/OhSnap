@@ -153,7 +153,7 @@ local function unitscan(unit)
 			-- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
 			if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
 				-- If the spell is on the given unit, and its not already Mdone
-				if not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
 				--if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
 					if not Mdone[guid][spellname] then
 						local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
@@ -184,7 +184,7 @@ function anchor:PLAYER_TARGET_CHANGED(event)
     end
     table.wipe(targetMsgs)
 	
-    if UnitExists("target") and not UnitIsFriend("player", "target") then
+    if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
 	--if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
     end
