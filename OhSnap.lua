@@ -251,6 +251,7 @@ end
 		local f = CreateFrame("Frame")
 		f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 		f:RegisterEvent("UNIT_SPELLCAST_FAILED")
+		f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 		f:RegisterEvent("UNIT_SPELLCAST_STOP")
 		f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 
