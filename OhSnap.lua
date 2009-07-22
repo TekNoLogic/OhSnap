@@ -41,7 +41,7 @@ function OhSnap:Initialize()
 end
 
 -- Adds a message to the alert frame, returns a uid
-function OhSnap:AddMessage(msg, priority, r, g, b, a)
+function OhSnap:AddMessage(msg, priority, r, g, b, a, duration)
     local entry = {
         msg = msg or "Empty message", 
         pri = priority or 1,
@@ -50,6 +50,7 @@ function OhSnap:AddMessage(msg, priority, r, g, b, a)
         g = g or 1,
         b = b or 1,
         a = a or 1,
+		dura = duration or 0,
     }
 
     uidcount = uidcount + 1
@@ -114,7 +115,14 @@ function OhSnap:Update()
         row:SetWidth(250)
         row.text:SetFontObject(font[1])
 		row.text:SetFont(font[2],fonts[entry.pri][1],fonts[entry.pri][2])
-        row.text:SetText(entry.msg)
+		local duration = floor(entry.dura-GetTime())
+		local message
+		if duration >= 0 then
+			message = entry.msg.." - "..duration.."s"
+		else
+			message = entry.msg
+		end
+        row.text:SetText(message)
         row.text:SetTextColor(entry.r, entry.g, entry.b, entry.a)
         row:Show()
     end
@@ -143,24 +151,26 @@ anchor:SetScript("OnEvent", function(self, event, ...)
     if self[event] then return self[event](self, event, ...) end
 end)
 
-local targetGUID
+local onUpdate = CreateFrame("frame") -- frame we use to SetScript the OnUpdate
 
 local function unitscan(unit)
 	-- Debuffs
+	local guid = UnitGUID(unit)
 	do
 		local i = 4
 		for k,v in pairs(OhSnap.spells[i]) do
 			local spellname = GetSpellInfo(k)
-			local guid = UnitGUID(unit)
+			--local guid = UnitGUID(unit)
 			local targetclass = select(2,UnitClass(unit))
 			if (v.class and targetclass == v.class) or not v.class then
-				-- If the spell is on the given unit, and its not already Mdone
-				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
-				--if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers!
+				-- If the spell is on the given unit, and its not already done
+				--if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
+				if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers!
 					if not Mdone[guid][spellname] then
 						local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..UnitDebuff(unit, spellname)
 						if v.msg then message = message.." ("..v.msg..")" end
-						local uid = OhSnap:AddMessage(message,i,0,1,0) -- prio 1
+						local duration = select(7,UnitDebuff(unit,spellname))
+						local uid = OhSnap:AddMessage(message,i,0,1,0,1,duration) -- prio 4
 						Mdone[guid][spellname] = uid
 						if UnitIsUnit(unit, "target") then
 							table.insert(targetMsgs, uid)
@@ -178,19 +188,20 @@ local function unitscan(unit)
 	for i=2,3 do
 		for k,v in pairs(OhSnap.spells[i]) do
 			local spellname = GetSpellInfo(k)
-			local guid = UnitGUID(unit)
+			--local guid = UnitGUID(unit)
 			local targetclass = select(2,UnitClass(unit))
 			-- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
 			if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
 				-- If the spell is on the given unit, and its not already Mdone
-				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
-				--if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
+				--if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+				if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
 					if not Mdone[guid][spellname] then
 						local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 						local r,g,b = classcolor.r,classcolor.g,classcolor.b
 						local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..UnitAura(unit, spellname)
 						if v.msg then message = message.." ("..v.msg..")" end
-						local uid = OhSnap:AddMessage(message,i,r,g,b)
+						local duration = select(7,UnitAura(unit,spellname))
+						local uid = OhSnap:AddMessage(message,i,r,g,b,1,duration)
 						Mdone[guid][spellname] = uid
 						if UnitIsUnit(unit, "target") then
 							table.insert(targetMsgs, uid)
@@ -204,18 +215,33 @@ local function unitscan(unit)
 			end
 		end
 	end
+	if Mdone[guid] and not next(Mdone[guid]) then
+		Mdone[guid] = nil
+	end
+
+	if next(Mdone) then
+		if not onUpdate:GetScript("OnUpdate") then
+			print("OnUpdate")
+			onUpdate:SetScript("OnUpdate", function()
+				OhSnap:Update()
+			end)
+		end
+	else
+		if onUpdate:GetScript("OnUpdate") then
+			print("OnUpdate nil")
+			onUpdate:SetScript("OnUpdate",nil)
+		end
+	end
 end
 
 function anchor:PLAYER_TARGET_CHANGED(event)
-	if targetGUID then Mdone[targetGUID] = nil end
-	targetGUID = UnitGUID("target")
     for idx,uid in ipairs(targetMsgs) do
         OhSnap:DelMessage(uid)
     end
     table.wipe(targetMsgs)
 	
-    if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
-	--if UnitExists("target") then -- this is to test the addon with friendly duelers!
+    --if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
+	if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
     end
 end
