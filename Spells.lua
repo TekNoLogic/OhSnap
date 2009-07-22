@@ -7,9 +7,9 @@ OhSnap.spells[1] = {
 		-- Anti-Magic Shell
 		[48707] = {msg = "75% Magic Shield", class = "DEATHKNIGHT"},
 		-- Icebound Fortitude
-		[48792] = {msg = "20% Shield", class = "DEATHKNIGHT"},
+		[48792] = {msg = "20%+ Shield", class = "DEATHKNIGHT"},
 		-- Hysteria
-		[49016] = {msg = "+20% Damage"},
+		[49016] = {msg = "20% Damage"},
 		-- Dancing Rune Weapon
 		[49028] = {class = "DEATHKNIGHT"},
 		-- Lichborne
@@ -21,9 +21,9 @@ OhSnap.spells[1] = {
 		[19263] = {msg = "100% Parry, 100% Deflect", class = "HUNTER"},
 	-- Mage
 		-- Mana Shield
-		[43020] = {msg = "Absorbs damage, Breakable", class = "MAGE"},
+		[43020] = {msg = "Absorbs damage", class = "MAGE"},
 		-- Ice Barrier
-		[43039] = {msg = "Absorbs damage, Breakable", class = "MAGE"},
+		[43039] = {msg = "Absorbs damage", class = "MAGE"},
 	-- Paladin
 		-- Divine Protection
 		[498] = {msg = "50% Shield"},
@@ -36,9 +36,9 @@ OhSnap.spells[1] = {
 		-- Avenging Wrath
 		[31884] = {msg = "+20% Damage, Stealable", class = "PALADIN"},
 		-- Divine Aegis
-		[47515] = {msg = "Absorbs damage, Breakable"},
+		[47515] = {msg = "Absorbs damage"},
 		-- Sacred Shield
-		[53601] = {msg = "Absorbs damage, Breakable"},
+		[53601] = {msg = "Absorbs damage"},
 		-- Divine Sacrifice
 		[64205] = {msg = "30% Shield"},
 	-- Priest
@@ -49,7 +49,7 @@ OhSnap.spells[1] = {
 		-- Dispersion
 		[47585] = {msg = "90% Shield", class = "PRIEST"},
 		-- Power Word: Shield
-		[48066] = {msg = "Absorbs damage, Breakable"},
+		[48066] = {msg = "Absorbs damage"},
 	-- Rogue
 		-- Killing Spree
 		[13877] = {msg = "AoE, +20% Haste", class = "ROGUE"},
@@ -70,7 +70,7 @@ OhSnap.spells[1] = {
 		-- Metamorphosis
 		[47241] = {msg = "+20% Damage, 600% Armor", class = "WARLOCK"},
 		-- Sacrifice
-		[47986] = {msg = "Absorbs damage, Breakable", class = "WARLOCK"},
+		[47986] = {msg = "Absorbs damage", class = "WARLOCK"},
 	-- Warrior
 		-- Shield Wall
 		[871] = {msg = "60% Shield", class = "WARRIOR"},
@@ -128,20 +128,20 @@ OhSnap.spells[2] = {
 		-- Retaliation
 		[20230] = {msg = "Returns damage", class = "WARRIOR"},
 		-- Spell Reflection
-		[23920] = {msg = "Reflect!", class = "WARRIOR"},
+		[23920] = {msg = "No spells!", class = "WARRIOR"},
 		-- Bladestorm
 		[46924] = {msg = "AoE, Unstoppable", class = "WARRIOR"},
 		
 	-- Misc
 		-- Drink
-		[43706] = {msg = "Gaining mana, Interrupt!"},
+		[43706] = {msg = "Resting"},
 		
 	-- TEST SPELLS
 		-- Banner of the Horde
 		[61574] = {msg = "For Gnomeregan!"},
 		-- Banner of the Alliance
 		[61573] = {msg = "For the Horde!"},
-}
+
 
 --These are spells with castingtime.
 OhSnap.spells[3] = {
