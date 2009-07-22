@@ -21,7 +21,7 @@ OhSnap.spells[3] = {
 		-- Dancing Rune Weapon
 		[49028] = {class = "DEATHKNIGHT"},
 		-- Lichborne
-		[49039] = {msg = "Fear Immune, Shackleable", class = "DEATHKNIGHT"},
+		[49039] = {msg = "Fear Immune, |cFF00FF00Shackleable|r", class = "DEATHKNIGHT"},
 		-- Deathchill
 		[49796] = {msg = "100% Crit", class = "DEATHKNIGHT"},
 	-- Hunter
@@ -42,7 +42,7 @@ OhSnap.spells[3] = {
 		-- Aura Mastery
 		[31821] = {msg = "Silence Immune"},
 		-- Avenging Wrath
-		[31884] = {msg = "+20% Damage, Stealable", class = "PALADIN"},
+		[31884] = {msg = "+20% Damage, |cFF00FF00Stealable|r", class = "PALADIN"},
 		-- Divine Aegis
 		[47515] = {msg = "Absorbs damage"},
 		-- Sacred Shield
@@ -100,27 +100,27 @@ OhSnap.spells[2] = {
 		-- Dash
 		[33357] = {msg = "+Speed", class = "DRUID"},
 		-- Nature's Grasp
-		[53312] = {msg = "Hit roots you", class = "DRUID"},
+		[53312] = {msg = "|cFFFF0000Hit roots you|r", class = "DRUID"},
 	-- Hunter
 		-- Bestial Wrath
 		[19574] = {msg = "Unstoppable"},
 	-- Mage
 		-- Invisibility
-		[66] = {msg = "Disappearing", class = "MAGE"},
+		[66] = {msg = "|cFFFF0000Disappearing|r", class = "MAGE"},
 		-- Presence of Mind
-		[12043] = {msg = "Instant cast", class = "MAGE"},
+		[12043] = {msg = "|cFFFF0000Instant cast|r", class = "MAGE"},
 		-- Ice Block
 		[45438] = {msg = "|cFFFF0000Immune|r, |cFF00FF00Dispellable|r", class = "MAGE"},
 		-- Blazing Speed
 		[31642] = {msg = "+Speed", class = "MAGE"},
 	-- Paladin
 		-- Divine Shield
-		[642] = {msg = "Immune, |cFF00FF00Dispellable|r", class = "PALADIN"},
+		[642] = {msg = "|cFFFF0000Immune|r, |cFF00FF00Dispellable|r", class = "PALADIN"},
 		-- Hand of Protection
-		[10278] = {msg = "Melee Immune, pacified"},
+		[10278] = {msg = "Melee Immune, |cFF00FF00pacified|r"},
 	-- Priest
 		-- Guardian Spirit
-		[47788] = {msg = "Unkillable", class = "PRIEST"},
+		[47788] = {msg = "|cFFFF0000Unkillable|r", class = "PRIEST"},
 	-- Rogue
 		-- Sprint
 		[11305] = {msg = "+Speed", class = "ROGUE"},
@@ -135,19 +135,19 @@ OhSnap.spells[2] = {
 		-- Retaliation
 		[20230] = {msg = "Returns damage", class = "WARRIOR"},
 		-- Spell Reflection
-		[23920] = {msg = "No spells!", class = "WARRIOR"},
+		[23920] = {msg = "|cFFFF0000No spells!|r", class = "WARRIOR"},
 		-- Bladestorm
 		[46924] = {msg = "AoE, Unstoppable", class = "WARRIOR"},
 		
 	-- Misc
 		-- Drink
-		[43706] = {msg = "Resting"},
+		[43706] = {msg = "|cFFFF0000Resting|r"},
 		
 	-- TEST SPELLS
 		-- Banner of the Horde
-		[61574] = {msg = "For Gnomeregan!"},
+		[61574] = {msg = "|cFF00AEEFFor Gnomeregan!|r"},
 		-- Banner of the Alliance
-		[61573] = {msg = "For the Horde!"},
+		[61573] = {msg = "|cFFFF0000For the Horde!|r"},
 }
 -- Spells tracked
 OhSnap.spells[1] = {
