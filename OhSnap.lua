@@ -5,9 +5,10 @@ local rows = {}
 local uidcount = 0
 local font = {"WorldMapTextFont","Fonts\\FRIZQT__.TTF"}
 local fonts = {
-	[1] = {12,"OUTLINE"},
+	[1] = {32,"OUTLINE, THICKOUTLINE"},
 	[2] = {18,"OUTLINE"},
-	[3] = {32,"OUTLINE, THICKOUTLINE"},
+	[3] = {12,"OUTLINE"},
+	[4] = {12,"OUTLINE"},
 }
 
 -- Set up default priority fonts
@@ -77,7 +78,7 @@ local function sortFunc(a, b)
     if a.pri == b.pri then
         return a.count < b.count
     else
-        return a.pri >= b.pri
+        return a.pri < b.pri
     end
 end
 
@@ -145,7 +146,36 @@ end)
 local targetGUID
 
 local function unitscan(unit)
-	for i=1,2 do
+	-- Debuffs
+	do
+		local i = 4
+		for k,v in pairs(OhSnap.spells[i]) do
+			local spellname = GetSpellInfo(k)
+			local guid = UnitGUID(unit)
+			local targetclass = select(2,UnitClass(unit))
+			if (v.class and targetclass == v.class) or not v.class then
+				-- If the spell is on the given unit, and its not already Mdone
+				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
+				--if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers!
+					if not Mdone[guid][spellname] then
+						local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..UnitDebuff(unit, spellname)
+						if v.msg then message = message.." ("..v.msg..")" end
+						local uid = OhSnap:AddMessage(message,i,0,1,0) -- prio 1
+						Mdone[guid][spellname] = uid
+						if UnitIsUnit(unit, "target") then
+							table.insert(targetMsgs, uid)
+						end
+					end
+				elseif Mdone[guid][spellname] then
+					local uid = Mdone[guid][spellname]
+					OhSnap:DelMessage(uid)
+					Mdone[guid][spellname] = nil
+				end
+			end
+		end
+	end
+	-- Buffs
+	for i=2,3 do
 		for k,v in pairs(OhSnap.spells[i]) do
 			local spellname = GetSpellInfo(k)
 			local guid = UnitGUID(unit)
@@ -228,7 +258,7 @@ end
 		anchor:RegisterEvent("UNIT_SPELLCAST_START")
 		function anchor:UNIT_SPELLCAST_START(event,unit)
 			if validtarget(unit) and targettargetcheck() then
-				for k,v in pairs(OhSnap.spells[3]) do
+				for k,v in pairs(OhSnap.spells[1]) do
 					local spellname = GetSpellInfo(k)
 					local guid = UnitGUID(unit)
 					local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")

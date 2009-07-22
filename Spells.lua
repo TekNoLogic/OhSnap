@@ -1,6 +1,14 @@
 OhSnap = {}
 OhSnap.spells = {}
-OhSnap.spells[1] = {
+-- Debuffs tracked
+OhSnap.spells[4] = {
+	-- Paladin
+		[25771] = {msg = "Can't Bubble"},
+	-- Mage
+		[41425] = {msg = "Can't Ice Block"},
+}
+-- Buffs tracked
+OhSnap.spells[3] = {
 	-- Death Knight
 		-- Army of the Dead
 		[42650] = {msg = "Braiiiins!", class = "DEATHKNIGHT"},
@@ -87,7 +95,6 @@ OhSnap.spells[1] = {
 		-- Honorless Target
 		[46705] = {msg = "Do it."},
 }
-
 OhSnap.spells[2] = {
 	-- Druid
 		-- Dash
@@ -103,12 +110,12 @@ OhSnap.spells[2] = {
 		-- Presence of Mind
 		[12043] = {msg = "Instant cast", class = "MAGE"},
 		-- Ice Block
-		[45438] = {msg = "Immune, Dispellable", class = "MAGE"},
+		[45438] = {msg = "|cFFFF0000Immune|r, |cFF00FF00Dispellable|r", class = "MAGE"},
 		-- Blazing Speed
 		[31642] = {msg = "+Speed", class = "MAGE"},
 	-- Paladin
 		-- Divine Shield
-		[642] = {msg = "Immune, Dispellable", class = "PALADIN"},
+		[642] = {msg = "Immune, |cFF00FF00Dispellable|r", class = "PALADIN"},
 		-- Hand of Protection
 		[10278] = {msg = "Melee Immune, pacified"},
 	-- Priest
@@ -141,10 +148,9 @@ OhSnap.spells[2] = {
 		[61574] = {msg = "For Gnomeregan!"},
 		-- Banner of the Alliance
 		[61573] = {msg = "For the Horde!"},
-
-
---These are spells with castingtime.
-OhSnap.spells[3] = {
+}
+-- Spells tracked
+OhSnap.spells[1] = {
 	-- Druid
 		-- Hibernate
 		[18658] = {},
