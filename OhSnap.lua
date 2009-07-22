@@ -267,7 +267,7 @@ end
 						if not spellalert[guid][spellname] then
 							local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 							local r,g,b = classcolor.r,classcolor.g,classcolor.b
-							local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..texture..":0|t "..name.." -> "..UnitName("targettarget"),3,r,g,b)
+							local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..texture..":0|t "..name.." -> "..UnitName("targettarget"),1,r,g,b)
 							spellalert[guid][spellname] = uid
 							if UnitIsUnit(unit, "target") then
 								table.insert(targetMsgs, uid)
