@@ -261,6 +261,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
             if unit and UnitGUID(unit) == sourceGUID then
                 -- This is a unit we have an ID for at the moment so grab the target information
                 local destName = UnitName(unit .. "target")
+                local isUnit = UnitName(destName)
 
                 local spellId, spellName = select(9, ...)
                 local spellTexture = select(3, GetSpellInfo(spellId))
@@ -270,10 +271,10 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 if arena and not destName and UnitIsEnemy("player", unit) then
                     -- This is here to ensure we don't skip it
                     destName = "Unknown"
-                elseif arena and (not UnitPlayerOrPetInParty(destName)) and (not UnitIsUnit(destName, "player")) then
+                elseif arena and isUnit and (not UnitPlayerOrPetInparty(destName)) and (not UnitIsUnit(destName, "player")) then
                     -- They are casting on someone we don't care about
                     return
-                elseif not arena and not UnitIsUnit(destName, "player") then
+                elseif not arena and isUnit and not UnitIsUnit(destName, "player") then
                     -- Ignore anything that isn't targeting us
                     return
                 end
