@@ -216,4 +216,9 @@ OhSnap.spells[1] = {
 		[30146] = {},
 		-- Howl of Terror
 		[47857] = {},
+
+    -- DIRECT DAMAGE FOR TESTING ONLY
+        [49238] = {},
+        [48461] = {},
+        [47809] = {},
 }

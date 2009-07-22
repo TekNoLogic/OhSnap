@@ -230,84 +230,127 @@ function anchor:PLAYER_ENTERING_WORLD()
 	if not UnitExists("target") then OhSnap:Clear() end
 end
 
--- New stuff starts here, fix it jnwhiteh... Seriously. Do it. Do it. Do it. http://www.youtube.com/watch?v=JoqDYcCDOTg
+-- Handle incoming spellcasts on friendly players.
 
-		local function validtarget(unit)
-			if unit == "target" or unit:match("^arena") then 
-			return true
-			end
-		end
+local spellalert = setmetatable({}, {__index = function(t,k)
+    local new = {}
+    rawset(t, k, new)
+    return new
+end})
+anchor:RegisterEvent("UNIT_SPELLCAST_START")
+anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-		local function targettargetcheck()
-			if IsActiveBattlefieldArena() then
-				if UnitExists("targettarget") and UnitIsPlayer("targettarget") and UnitIsFriend(unit,"targettarget") then 
-					return true
-				end
-			else
-				if UnitExists("targettarget") and UnitName("targettarget") == UnitName("player") then
-					return true
-				end
-			end
-		end
+local guidmap = {}
+function anchor:INCOMING_SPELLCAST(event, ...)
+    local arena = IsActiveBattlefieldArena()
 
-		local spellalert = setmetatable({}, {__index = function(t,k)
-			local new = {}
-			rawset(t, k, new)
-			return new
-		end})
-		anchor:RegisterEvent("UNIT_SPELLCAST_START")
-		function anchor:UNIT_SPELLCAST_START(event,unit)
-			if validtarget(unit) and targettargetcheck() then
-				for k,v in pairs(OhSnap.spells[1]) do
-					local spellname = GetSpellInfo(k)
-					local guid = UnitGUID(unit)
-					local name, subText, text, texture, startTime, endTime, isTradeSkill, castID = UnitCastingInfo("target")
-					--if not UnitIsFriend("player", unit) and spellname == name then -- this line does not work in duels ;/
-					if spellname == name then
-						if not spellalert[guid][spellname] then
-							local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
-							local r,g,b = classcolor.r,classcolor.g,classcolor.b
-							local uid = OhSnap:AddMessage(UnitName(unit).. ": |T"..texture..":0|t "..name.." -> "..UnitName("targettarget"),1,r,g,b)
-							spellalert[guid][spellname] = uid
-							if UnitIsUnit(unit, "target") then
-								table.insert(targetMsgs, uid)
-							end
-						end
-					end
-				end
-			end
-		end
+    -- When we get a unit casting event, store the GUID
+    if event == "UNIT_SPELLCAST_START" then
+        local unit, spell = ...
+        local guid = UnitGUID(unit)
+        guidmap[guid] = unit
+        return
+    end
 
-		local f = CreateFrame("Frame")
-		f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-		f:RegisterEvent("UNIT_SPELLCAST_FAILED")
-		f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
-		f:RegisterEvent("UNIT_SPELLCAST_STOP")
-		f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+    -- Use COMBAT_LOG_EVENT_UNFILTERED to actually catch the spellcasts from our non-targets
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 
-		f:SetScript("OnEvent",function(self,event,unit,spellname)
-			if validtarget(unit) and targettargetcheck() then
-				local guid = UnitGUID(unit)
-				if spellalert[guid] and spellalert[guid][spellname] then
-					local uid = spellalert[guid][spellname]
-					OhSnap:DelMessage(uid)
-					spellalert[guid][spellname] = nil
-				end
-			end
-		end)
+        local timestamp, cevent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
+        if cevent == "SPELL_CAST_START" then
+            local unit = guidmap[sourceGUID]
+            if unit and UnitGUID(unit) == sourceGUID then
+                -- This is a unit we have an ID for at the moment so grab the target information
+                local destName = UnitName(unit .. "target")
 
-		local TestMessage1,TestMessage2,TestMessage3
-		SLASH_OhSnap1 = "/ohsnap"
-		SlashCmdList["OhSnap"] = function(name) 
-			if OhSnapAnchor:IsVisible() then
-				OhSnapAnchor:Hide()
-				OhSnap:DelMessage(TestMessage1)
-				OhSnap:DelMessage(TestMessage2)
-				OhSnap:DelMessage(TestMessage3)		
-			else
-				OhSnapAnchor:Show()
-				TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable spells (Buffs)",1,1,1,1)
-				TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying spells (Buffs)",2,1,1,0)
-				TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells (Casted)",3,1,0,0)
-			end
-		end
+                local spellId, spellName = select(9, ...)
+                local spellTexture = select(3, GetSpellInfo(spellId))
+                local srcName = sourceName
+                local guid = sourceGUID
+
+                if arena and not destName and UnitIsEnemy("player", unit) then
+                    -- This is here to ensure we don't skip it
+                    destName = "Unknown"
+                elseif arena and (not UnitPlayerOrPetInParty(destName)) and (not UnitIsUnit(destName, "player")) then
+                    -- They are casting on someone we don't care about
+                    return
+                elseif not arena and not UnitIsUnit(destName, "player") then
+                    -- Ignore anything that isn't targeting us
+                    return
+                end
+
+                for k,v in pairs(OhSnap.spells[1]) do
+                    local spellname = GetSpellInfo(k)
+                    if spellname == spellName then
+                        if not spellalert[guid][spellname] then
+                            local class = select(2, UnitClass(unit)) or "PRIEST"
+                            local classcolor = RAID_CLASS_COLORS[class]
+                            local r,g,b = classcolor.r, classcolor.g, classcolor.b
+                            local msg = string.format("%s: |T%s:0|t %s -> %s", srcName, spellTexture, spellName, destName)
+                            local uid = OhSnap:AddMessage(msg, 1, r, g, b)
+
+                            spellalert[guid][spellname] = uid
+                            if targetMsg then 
+                                table.insert(targetMsgs, uid)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+
+anchor.UNIT_SPELLCAST_START = anchor.INCOMING_SPELLCAST
+anchor.COMBAT_LOG_EVENT_UNFILTERED = anchor.INCOMING_SPELLCAST
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+f:RegisterEvent("UNIT_SPELLCAST_FAILED")
+f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+f:RegisterEvent("UNIT_SPELLCAST_STOP")
+f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
+f:SetScript("OnEvent",function(self, event, ...)
+    local guid, spellname
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        local cevent, srcGUID = ...
+        if cevent == "SPELL_CAST_SUCCESS" or cevent == "SPELL_CAST_FAILED" then
+            spellname = select(10, ...)
+            guid = srcGUID
+        else
+            return
+        end
+    else
+        local unit, name = ...
+        if unit == "target" and UnitExists("targettarget") and UnitIsUnit("targettarget", "player") then
+            guid = UnitGUID(unit)
+            spellname = name
+        else
+            return
+        end
+    end
+
+    if spellalert[guid] and spellalert[guid][spellname] then
+        local uid = spellalert[guid][spellname]
+        OhSnap:DelMessage(uid)
+        spellalert[guid][spellname] = nil
+    end
+end)
+
+local TestMessage1,TestMessage2,TestMessage3
+SLASH_OhSnap1 = "/ohsnap"
+SlashCmdList["OhSnap"] = function(name) 
+    if OhSnapAnchor:IsVisible() then
+        OhSnapAnchor:Hide()
+        OhSnap:DelMessage(TestMessage1)
+        OhSnap:DelMessage(TestMessage2)
+        OhSnap:DelMessage(TestMessage3)		
+    else
+        OhSnapAnchor:Show()
+        TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable spells (Buffs)",1,1,1,1)
+        TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying spells (Buffs)",2,1,1,0)
+        TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells (Casted)",3,1,0,0)
+    end
+end
