@@ -240,7 +240,7 @@ end
 
 		local function targettargetcheck()
 			if IsActiveBattlefieldArena() then
-				if UnitExists("targettarget") and UnitIsFriend(unit,targettarget) then 
+				if UnitExists("targettarget") and UnitIsPlayer("targettarget") and UnitIsFriend(unit,targettarget) then 
 					return true
 				end
 			else
