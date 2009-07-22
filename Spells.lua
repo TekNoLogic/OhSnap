@@ -3,9 +3,14 @@ OhSnap.spells = {}
 -- Debuffs tracked
 OhSnap.spells[4] = {
 	-- Paladin
+		-- Forbearance
 		[25771] = {msg = "Can't Bubble"},
 	-- Mage
+		-- Hypothermia
 		[41425] = {msg = "Can't Ice Block"},
+	-- Priest
+		-- Weakened Soul
+		[6788] = {msg = "Can't be Shielded"},
 }
 -- Buffs tracked
 OhSnap.spells[3] = {
@@ -216,9 +221,4 @@ OhSnap.spells[1] = {
 		[30146] = {},
 		-- Howl of Terror
 		[47857] = {},
-
-    -- DIRECT DAMAGE FOR TESTING ONLY
-        [49238] = {},
-        [48461] = {},
-        [47809] = {},
 }

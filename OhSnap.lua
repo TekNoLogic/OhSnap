@@ -1,5 +1,3 @@
---OhSnap = {}
-
 local messages = {}
 local rows = {}
 local uidcount = 0
@@ -164,8 +162,8 @@ local function unitscan(unit)
 			local targetclass = select(2,UnitClass(unit))
 			if (v.class and targetclass == v.class) or not v.class then
 				-- If the spell is on the given unit, and its not already done
-				--if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
-				if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers!
+				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
+				--if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers!
 					if not Mdone[guid][spellname] then
 						local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..UnitDebuff(unit, spellname)
 						if v.msg then message = message.." ("..v.msg..")" end
@@ -193,8 +191,8 @@ local function unitscan(unit)
 			-- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
 			if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
 				-- If the spell is on the given unit, and its not already Mdone
-				--if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
-				if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
+				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+				--if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
 					if not Mdone[guid][spellname] then
 						local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 						local r,g,b = classcolor.r,classcolor.g,classcolor.b
@@ -240,10 +238,13 @@ function anchor:PLAYER_TARGET_CHANGED(event)
     end
     table.wipe(targetMsgs)
 	
-    --if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
-	if UnitExists("target") then -- this is to test the addon with friendly duelers!
+    if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
+	--if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
-    end
+    else
+		table.wipe(Mdone)
+		onUpdate:SetScript("OnUpdate",nil)
+	end
 end
 
 function anchor:UNIT_AURA(event, unit)
@@ -284,7 +285,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
         local timestamp, cevent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
         if cevent == "SPELL_CAST_START" then
             local unit = guidmap[sourceGUID]
-            if unit and UnitGUID(unit) == sourceGUID then
+            if unit and UnitGUID(unit) == sourceGUID and UnitIsEnemy("player", unit) then
                 -- This is a unit we have an ID for at the moment so grab the target information
                 local destName = UnitName(unit .. "target")
                 local isUnit = destName and UnitName(destName)
@@ -303,7 +304,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 elseif not arena and isUnit and not UnitIsUnit(destName, "player") then
                     -- Ignore anything that isn't targeting us
                     return
-                end
+				end
 
                 for k,v in pairs(OhSnap.spells[1]) do
                     local spellname = GetSpellInfo(k)
