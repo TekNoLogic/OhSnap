@@ -145,6 +145,7 @@ local targetMsgs = {}
 anchor:RegisterEvent("PLAYER_TARGET_CHANGED")
 anchor:RegisterEvent("UNIT_AURA")
 anchor:RegisterEvent("PLAYER_ENTERING_WORLD")
+anchor:RegisterEvent("PLAYER_DEAD")
 anchor:SetScript("OnEvent", function(self, event, ...)
     if self[event] then return self[event](self, event, ...) end
 end)
@@ -257,8 +258,12 @@ function anchor:PLAYER_ENTERING_WORLD()
 	if not UnitExists("target") then OhSnap:Clear() end
 end
 
--- Handle incoming spellcasts on friendly players.
+function anchor:PLAYER_DEAD()
+	table.wipe(Mdone)
+	onUpdate:SetScript("OnUpdate",nil)
+end
 
+-- Handle incoming spellcasts on friendly players.
 local spellalert = setmetatable({}, {__index = function(t,k)
     local new = {}
     rawset(t, k, new)
