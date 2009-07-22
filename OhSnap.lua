@@ -261,7 +261,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
             if unit and UnitGUID(unit) == sourceGUID then
                 -- This is a unit we have an ID for at the moment so grab the target information
                 local destName = UnitName(unit .. "target")
-                local isUnit = UnitName(destName)
+                local isUnit = destName and UnitName(destName)
 
                 local spellId, spellName = select(9, ...)
                 local spellTexture = select(3, GetSpellInfo(spellId))
