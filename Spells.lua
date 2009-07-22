@@ -32,7 +32,7 @@ OhSnap.spells[1] = {
 		-- Hand of Sacrifice
 		[6940] = {msg = "30% Shield"},
 		-- Aura Mastery
-		[31821] = {msg = "Silence Immune", class = "PALADIN"},
+		[31821] = {msg = "Silence Immune"},
 		-- Avenging Wrath
 		[31884] = {msg = "+20% Damage, Stealable", class = "PALADIN"},
 		-- Divine Aegis
