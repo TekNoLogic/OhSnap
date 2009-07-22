@@ -1,4 +1,5 @@
 local messages = {}
+local targetMsgs = {}
 local rows = {}
 local uidcount = 0
 local font = {"WorldMapTextFont","Fonts\\FRIZQT__.TTF"}
@@ -14,6 +15,9 @@ setmetatable(fonts, {__index = function(t,k) return rawget(t, 0) end})
 
 -- Create the anchor frame early
 local anchor = CreateFrame("Frame", "OhSnapAnchor", UIParent)
+
+-- Frame we use to SetScript the OnEvent and OnUpdate
+local EventFrame = CreateFrame("Frame")
 
 function OhSnap:Initialize()
 	anchor:SetFrameStrata("HIGH")
@@ -70,6 +74,10 @@ end
 
 function OhSnap:Clear()
     table.wipe(messages)
+	table.wipe(Mdone)
+	table.wipe(targetMsgs)
+	EventFrame:SetScript("OnUpdate",nil)
+	print("OnUpdate nil")
     self:Update()
 end
 
@@ -140,17 +148,14 @@ Mdone = setmetatable({}, {__index = function(t,k)
     rawset(t, k, new)
     return new
 end})
-local targetMsgs = {}
 
 anchor:RegisterEvent("PLAYER_TARGET_CHANGED")
 anchor:RegisterEvent("UNIT_AURA")
 anchor:RegisterEvent("PLAYER_ENTERING_WORLD")
-anchor:RegisterEvent("PLAYER_DEAD")
+anchor:RegisterEvent("PLAYER_ALIVE")
 anchor:SetScript("OnEvent", function(self, event, ...)
     if self[event] then return self[event](self, event, ...) end
 end)
-
-local onUpdate = CreateFrame("frame") -- frame we use to SetScript the OnUpdate
 
 local function unitscan(unit)
 	-- Debuffs
@@ -219,16 +224,14 @@ local function unitscan(unit)
 	end
 
 	if next(Mdone) then
-		if not onUpdate:GetScript("OnUpdate") then
+		if not EventFrame:GetScript("OnUpdate") then
 			print("OnUpdate")
-			onUpdate:SetScript("OnUpdate", function()
-				OhSnap:Update()
-			end)
+			EventFrame:SetScript("OnUpdate", OhSnap.Update)
 		end
 	else
-		if onUpdate:GetScript("OnUpdate") then
+		if EventFrame:GetScript("OnUpdate") then
 			print("OnUpdate nil")
-			onUpdate:SetScript("OnUpdate",nil)
+			EventFrame:SetScript("OnUpdate",nil)
 		end
 	end
 end
@@ -242,9 +245,6 @@ function anchor:PLAYER_TARGET_CHANGED(event)
     if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
 	--if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
-    else
-		table.wipe(Mdone)
-		onUpdate:SetScript("OnUpdate",nil)
 	end
 end
 
@@ -255,20 +255,21 @@ function anchor:UNIT_AURA(event, unit)
 end
 
 function anchor:PLAYER_ENTERING_WORLD()
-	if not UnitExists("target") then OhSnap:Clear() end
+	OhSnap:Clear()
 end
 
-function anchor:PLAYER_DEAD()
-	table.wipe(Mdone)
-	onUpdate:SetScript("OnUpdate",nil)
+function anchor:PLAYER_ALIVE()
+	OhSnap:Clear()
 end
 
+--[[
 -- Handle incoming spellcasts on friendly players.
 local spellalert = setmetatable({}, {__index = function(t,k)
     local new = {}
     rawset(t, k, new)
     return new
 end})
+]]
 anchor:RegisterEvent("UNIT_SPELLCAST_START")
 anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
@@ -314,14 +315,14 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 for k,v in pairs(OhSnap.spells[1]) do
                     local spellname = GetSpellInfo(k)
                     if spellname == spellName then
-                        if not spellalert[guid][spellname] then
+                        if not Mdone[guid][spellname] then
                             local class = select(2, UnitClass(unit)) or "PRIEST"
                             local classcolor = RAID_CLASS_COLORS[class]
                             local r,g,b = classcolor.r, classcolor.g, classcolor.b
                             local msg = string.format("%s: |T%s:0|t %s -> %s", srcName, spellTexture, spellName, destName)
                             local uid = OhSnap:AddMessage(msg, 1, r, g, b)
 
-                            spellalert[guid][spellname] = uid
+                            Mdone[guid][spellname] = uid
                             if targetMsg then 
                                 table.insert(targetMsgs, uid)
                             end
@@ -337,15 +338,14 @@ end
 anchor.UNIT_SPELLCAST_START = anchor.INCOMING_SPELLCAST
 anchor.COMBAT_LOG_EVENT_UNFILTERED = anchor.INCOMING_SPELLCAST
 
-local f = CreateFrame("Frame")
-f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-f:RegisterEvent("UNIT_SPELLCAST_FAILED")
-f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
-f:RegisterEvent("UNIT_SPELLCAST_STOP")
-f:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
-f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-f:SetScript("OnEvent",function(self, event, ...)
+EventFrame:SetScript("OnEvent",function(self, event, ...)
     local guid, spellname
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local cevent, srcGUID = ...
@@ -365,10 +365,10 @@ f:SetScript("OnEvent",function(self, event, ...)
         end
     end
 
-    if spellalert[guid] and spellalert[guid][spellname] then
-        local uid = spellalert[guid][spellname]
+    if Mdone[guid] and Mdone[guid][spellname] then
+        local uid = Mdone[guid][spellname]
         OhSnap:DelMessage(uid)
-        spellalert[guid][spellname] = nil
+        Mdone[guid][spellname] = nil
     end
 end)
 
