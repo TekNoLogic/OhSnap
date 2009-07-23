@@ -171,11 +171,10 @@ local function unitscan(unit)
                 if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
                 --if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers
                     if not done[guid][spellname] then
-                        local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t"
-                        if v.msg then message = message.." "..v.msg.."" end
+                        local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitDebuff(unit,spellname))
                         local lenght = select(6,UnitDebuff(unit,spellname))
-                        local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght) -- prio 4
+                        local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght)
                         done[guid][spellname] = uid
                         if UnitIsUnit(unit, "target") then
                             table.insert(targetMsgs, uid)
@@ -202,8 +201,7 @@ local function unitscan(unit)
                     if not done[guid][spellname] then
                         local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
                         local r,g,b = classcolor.r,classcolor.g,classcolor.b
-                        local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t"
-                        if v.msg then message = message.." "..v.msg.."" end
+                        local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitAura(unit,spellname))
                         local lenght = select(6,UnitAura(unit,spellname))
                         local uid = OhSnap:AddMessage(message,prio,r,g,b,1,duration,lenght)
@@ -353,26 +351,3 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
         done[guid][spellname] = nil
     end
 end)
-
--- Lets replace this with nice GUI, shall we? :)
-local TestMessage1,TestMessage2,TestMessage3,TestMessage4
-SLASH_OhSnap1 = "/ohsnap"
-SlashCmdList["OhSnap"] = function(name) 
-    if OhSnapAnchor:IsVisible() then
-        OhSnapAnchor:Hide()
-        OhSnap:DelMessage(TestMessage1)
-        OhSnap:DelMessage(TestMessage2)
-        OhSnap:DelMessage(TestMessage3)
-        OhSnap:DelMessage(TestMessage4)
-        TestMessage1 = nil
-        TestMessage2 = nil
-        TestMessage3 = nil
-        TestMessage4 = nil
-    else
-        OhSnapAnchor:Show()
-        TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
-        TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable buffs",2,1,1,1)
-        TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying buffs",3,1,1,0)
-        TestMessage4 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Profitable debuffs",4,0,1,0)
-    end
-end
