@@ -24,7 +24,7 @@ OhSnap.spells[3] = {
 		-- Hysteria
 		[49016] = {msg = "20% Damage"},
 		-- Lichborne
-		[49039] = {msg = "Fear Immune, |cFF00FF00Shackleable|r", class = "DEATHKNIGHT"},
+		[49039] = {msg = "Fear Immune, Shackleable", class = "DEATHKNIGHT"},
 		-- Deathchill
 		[49796] = {msg = "100% Crit", class = "DEATHKNIGHT"},
 	-- Hunter
@@ -45,7 +45,7 @@ OhSnap.spells[3] = {
 		-- Aura Mastery
 		[31821] = {msg = "Silence Immune"},
 		-- Avenging Wrath
-		[31884] = {msg = "+20% Damage, |cFF00FF00Stealable|r", class = "PALADIN"},
+		[31884] = {msg = "+20% Damage", class = "PALADIN"},
 		-- Divine Aegis
 		[47515] = {msg = "Absorbs damage"},
 		-- Sacred Shield
@@ -113,14 +113,14 @@ OhSnap.spells[2] = {
 		-- Presence of Mind
 		[12043] = {msg = "|cFFFF0000Instant cast|r", class = "MAGE"},
 		-- Ice Block
-		[45438] = {msg = "|cFFFF0000Immune|r, |cFF00FF00Dispellable|r", class = "MAGE"},
+		[45438] = {msg = "|cFFFF0000Immune|r, Dispellable", class = "MAGE"},
 		-- Blazing Speed
 		[31642] = {msg = "+Speed", class = "MAGE"},
 	-- Paladin
 		-- Divine Shield
-		[642] = {msg = "|cFFFF0000Immune|r, |cFF00FF00Dispellable|r", class = "PALADIN"},
+		[642] = {msg = "|cFFFF0000Immune|r, Dispellable", class = "PALADIN"},
 		-- Hand of Protection
-		[10278] = {msg = "Melee Immune, |cFF00FF00pacified|r"},
+		[10278] = {msg = "Melee Immune, pacified"},
 	-- Priest
 		-- Guardian Spirit
 		[47788] = {msg = "|cFFFF0000Unkillable|r", class = "PRIEST"},
