@@ -4,6 +4,9 @@
 ## Author: Cladhaire, Mikma
 ## SavedVariables: OhSnapDB
 
+LibStub.lua
+LibSimpleOptions-1.0.lua
+
 Spells.lua
 OhSnap.lua
 Config.lua
