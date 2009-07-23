@@ -4,10 +4,11 @@ local rows = {}
 local guidmap = {}
 local uidcount = 0
 OhSnap.Defaults = {
-    [1] = {"Fonts\\FRIZQT__.TTF", 24,"OUTLINE, THICKOUTLINE"},
+    [1] = {"Fonts\\FRIZQT__.TTF", 24,"THICKOUTLINE"},
     [2] = {"Fonts\\FRIZQT__.TTF", 18,"OUTLINE"},
     [3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
     [4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
+	["ShowAnchor"] = true
 }
 
 if not OhSnapDB then OhSnapDB = OhSnap.Defaults end
@@ -250,11 +251,12 @@ function anchor:UNIT_AURA(event, unit)
 end
 
 function anchor:PLAYER_ENTERING_WORLD()
-    OhSnap:Clear()
+    if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
+	OhSnap:ToggleAnchor(OhSnapDB["ShowAnchor"])
 end
 
 function anchor:PLAYER_ALIVE()
-    OhSnap:Clear()
+	if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
 end
 
 function anchor:INCOMING_SPELLCAST(event, ...)
@@ -349,11 +351,18 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
     end
 end)
 
-local TestMessage1,TestMessage2,TestMessage3,TestMessage4
-SLASH_OhSnap1 = "/ohsnap"
-SlashCmdList["OhSnap"] = function(name)
-	if name == "hide" then
+function OhSnap:ToggleAnchor(value)
+	if value then
+		if OhSnapAnchor:IsVisible() then return end
+		OhSnapAnchor:Show()
+		OhSnapDB["ShowAnchor"] = value
+		TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
+		TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable buffs",2,1,1,1)
+		TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying buffs",3,1,1,0)
+		TestMessage4 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Profitable debuffs",4,0,1,0)
+	else
 		OhSnapAnchor:Hide()
+		OhSnapDB["ShowAnchor"] = value
 		OhSnap:DelMessage(TestMessage1)
 		OhSnap:DelMessage(TestMessage2)
 		OhSnap:DelMessage(TestMessage3)
@@ -362,13 +371,16 @@ SlashCmdList["OhSnap"] = function(name)
 		TestMessage2 = nil
 		TestMessage3 = nil
 		TestMessage4 = nil
+	end
+end
+
+local TestMessage1,TestMessage2,TestMessage3,TestMessage4
+SLASH_OhSnap1 = "/ohsnap"
+SlashCmdList["OhSnap"] = function(name)
+	if name == "hide" then
+		OhSnap:ToggleAnchor(false)
 	elseif name == "show" then
-		if OhSnapAnchor:IsVisible() then return end
-		OhSnapAnchor:Show()
-		TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
-		TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable buffs",2,1,1,1)
-		TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying buffs",3,1,1,0)
-		TestMessage4 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Profitable debuffs",4,0,1,0)
+		OhSnap:ToggleAnchor(true)
 	elseif name == "gui" then
 	elseif not name or name == "" then
 		ChatFrame1:AddMessage("OhSnap slashcommand:")
