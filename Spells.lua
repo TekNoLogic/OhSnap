@@ -4,7 +4,7 @@ OhSnap.spells = {}
 OhSnap.spells[4] = {
 	-- Paladin
 		-- Forbearance
-		[25771] = {msg = "Can't Bubble"},
+		[25771] = {msg = "Can't be Shielded"},
 	-- Mage
 		-- Hypothermia
 		[41425] = {msg = "Can't Ice Block"},
