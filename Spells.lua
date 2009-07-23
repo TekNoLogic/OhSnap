@@ -23,8 +23,6 @@ OhSnap.spells[3] = {
 		[48792] = {msg = "20%+ Shield", class = "DEATHKNIGHT"},
 		-- Hysteria
 		[49016] = {msg = "20% Damage"},
-		-- Dancing Rune Weapon
-		[49028] = {msg = "+50% Damage", class = "DEATHKNIGHT"},
 		-- Lichborne
 		[49039] = {msg = "Fear Immune, |cFF00FF00Shackleable|r", class = "DEATHKNIGHT"},
 		-- Deathchill
