@@ -10,19 +10,8 @@ frame:SetScript("OnShow", function(frame)
     title:SetPoint("TOPLEFT", 16, -16)
     title:SetText("OhSnap! PvP Spell Tracker")
 
-    local subtitle = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    subtitle:SetHeight(35)
-    subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
-    subtitle:SetPoint("RIGHT", frame, -32, 0)
-    subtitle:SetNonSpaceWrap(true)
-    subtitle:SetJustifyH("LEFT")
-    subtitle:SetJustifyV("TOP")
-    subtitle:SetText("Configuration:")
-
-    local rows, anchor = {}
-
     local lock = CreateFrame("Button",nil,frame)
-    lock:SetPoint("TOP", subtitle, "BOTTOM", 0, -16)
+    lock:SetPoint("TOP", title, "BOTTOM", 0, -16)
     lock:SetPoint("LEFT", EDGEGAP, 0)
     lock:SetPoint("RIGHT", -EDGEGAP*2-8, 0)
     lock:SetHeight(ROWHEIGHT)

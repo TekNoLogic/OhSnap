@@ -6,4 +6,4 @@
 
 Spells.lua
 OhSnap.lua
-config.lua
+Config.lua
