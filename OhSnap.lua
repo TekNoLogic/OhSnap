@@ -5,10 +5,10 @@ local guidmap = {}
 local uidcount = 0
 local font = {"WorldMapTextFont","Fonts\\FRIZQT__.TTF"}
 local fonts = {
-	[1] = {32,"OUTLINE, THICKOUTLINE"},
-	[2] = {18,"OUTLINE"},
-	[3] = {14,"OUTLINE"},
-	[4] = {11,"OUTLINE"},
+    [1] = {32,"OUTLINE, THICKOUTLINE"},
+    [2] = {18,"OUTLINE"},
+    [3] = {14,"OUTLINE"},
+    [4] = {11,"OUTLINE"},
 }
 
 -- Set up default priority fonts
@@ -28,7 +28,7 @@ local anchor = CreateFrame("Frame", "OhSnapAnchor", UIParent)
 local EventFrame = CreateFrame("Frame")
 
 function OhSnap:Initialize()
-	anchor:SetFrameStrata("HIGH")
+    anchor:SetFrameStrata("HIGH")
     anchor:SetHeight(30)
     anchor:SetWidth(150)
     anchor:SetBackdrop(GameTooltip:GetBackdrop())
@@ -36,15 +36,13 @@ function OhSnap:Initialize()
     anchor.text = anchor:CreateFontString(nil, "BACKGROUND", "GameFontNormal")
     anchor.text:SetAllPoints(true)
     anchor.text:SetText("OhSnap Anchor")
-
     anchor:SetPoint("CENTER", 0, 300)
     anchor:EnableMouse(true)
     anchor:SetMovable(true)
-	anchor:Hide()
+    anchor:Hide()
     anchor:SetScript("OnMouseDown", function(self, button)
         self:StartMoving()
     end)
-
     anchor:SetScript("OnMouseUp", function(self, button)
         self:StopMovingOrSizing()
     end)
@@ -60,10 +58,9 @@ function OhSnap:AddMessage(msg, priority, r, g, b, a, duration, lenght)
         g = g or 1,
         b = b or 1,
         a = a or 1,
-		dura = duration or 0,
-		len = lenght or 0,
+        dura = duration or 0,
+        len = lenght or 0,
     }
-
     uidcount = uidcount + 1
     table.insert(messages, entry)
     self:Update()
@@ -83,9 +80,9 @@ end
 
 function OhSnap:Clear()
     table.wipe(messages)
-	table.wipe(done)
-	table.wipe(targetMsgs)
-	EventFrame:SetScript("OnUpdate",nil)
+    table.wipe(done)
+    table.wipe(targetMsgs)
+    EventFrame:SetScript("OnUpdate",nil)
     self:Update()
 end
 
@@ -102,21 +99,17 @@ function OhSnap:Update()
     -- Create enough frames, if necessary
     for i=#rows + 1, #messages, 1 do
         local row = CreateFrame("Frame")
-		row:SetFrameStrata("HIGH")
+        row:SetFrameStrata("HIGH")
         row.text = row:CreateFontString(nil, "OVERLAY")
         row.text:SetPoint("CENTER", 0, 0)
-
         row.text:SetJustifyH("CENTER")
         rows[i] = row
     end
-
     -- Sort the frames
     table.sort(messages, sortFunc)
-
     -- Anchor the frames in order
     for idx,entry in ipairs(messages) do
         local row = rows[idx]
-
         if idx == 1 then
             row:ClearAllPoints()
             row:SetPoint("TOP", anchor, "BOTTOM", 0, 0)
@@ -124,32 +117,28 @@ function OhSnap:Update()
             row:ClearAllPoints()
             row:SetPoint("TOP", rows[idx-1], "BOTTOM", 0, 0)
         end
-
         row:SetHeight(20)
         row:SetWidth(250)
         row.text:SetFontObject(font[1])
-		row.text:SetFont(font[2],fonts[entry.pri][1],fonts[entry.pri][2])
-		local duration = floor(entry.dura-GetTime())
-		local message
-		
-		-- Coloring the time
-		local r,g,b = 0,1,0
-		local lenght = entry.len
-		local percent = duration / lenght
-		if ( percent > 0.5 ) then r,g,b = 2 * (1 - percent), 1, 0
-		else r,g,b = 1, 2 * percent, 0 end
-		local color = string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
-
-		if duration >= 0 then
-			message = entry.msg.." ("..color..duration.."|rs)"
-		else
-			message = entry.msg
-		end
+        row.text:SetFont(font[2],fonts[entry.pri][1],fonts[entry.pri][2])
+        local duration = floor(entry.dura-GetTime())
+        local message
+        -- Coloring the time
+        local r,g,b = 0,1,0
+        local lenght = entry.len
+        local percent = duration / lenght
+        if ( percent > 0.5 ) then r,g,b = 2 * (1 - percent), 1, 0
+        else r,g,b = 1, 2 * percent, 0 end
+        local color = string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
+        if duration >= 0 then
+            message = entry.msg.." ("..color..duration.."|rs)"
+        else
+            message = entry.msg
+        end
         row.text:SetText(message)
         row.text:SetTextColor(entry.r, entry.g, entry.b, entry.a)
         row:Show()
     end
-
     -- Hide any extra frames
     for i=#rows, #messages + 1, -1 do
         rows[i]:Hide()
@@ -165,106 +154,98 @@ anchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 anchor:RegisterEvent("PLAYER_ALIVE")
 anchor:RegisterEvent("UNIT_SPELLCAST_START")
 anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
 anchor:SetScript("OnEvent", function(self, event, ...)
     if self[event] then return self[event](self, event, ...) end
 end)
 
 local function unitscan(unit)
-	-- Debuffs
-	local guid = UnitGUID(unit)
-	do
-		local i = 4
-		for k,v in pairs(OhSnap.spells[i]) do
-			local spellname = GetSpellInfo(k)
-			--local guid = UnitGUID(unit)
-			local targetclass = select(2,UnitClass(unit))
-			if (v.class and targetclass == v.class) or not v.class then
-				-- If the spell is on the given unit, and its not already done
-				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
-				--if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers!
-					if not done[guid][spellname] then
-						--local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..UnitDebuff(unit, spellname)
-						local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t"
-						if v.msg then message = message.." "..v.msg.."" end
-						local duration = select(7,UnitDebuff(unit,spellname))
-						local lenght = select(6,UnitDebuff(unit,spellname))
-						local uid = OhSnap:AddMessage(message,i,0,1,0,1,duration,lenght) -- prio 4
-						done[guid][spellname] = uid
-						if UnitIsUnit(unit, "target") then
-							table.insert(targetMsgs, uid)
-						end
-					end
-				elseif done[guid][spellname] then
-					local uid = done[guid][spellname]
-					OhSnap:DelMessage(uid)
-					done[guid][spellname] = nil
-				end
-			end
-		end
-	end
-	-- Buffs
-	for i=2,3 do
-		for k,v in pairs(OhSnap.spells[i]) do
-			local spellname = GetSpellInfo(k)
-			--local guid = UnitGUID(unit)
-			local targetclass = select(2,UnitClass(unit))
-			-- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
-			if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
-				-- If the spell is on the given unit, and its not already done
-				if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
-				--if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
-					if not done[guid][spellname] then
-						local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
-						local r,g,b = classcolor.r,classcolor.g,classcolor.b
-						--local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..UnitAura(unit, spellname)
-						local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t"
-						if v.msg then message = message.." "..v.msg.."" end
-						local duration = select(7,UnitAura(unit,spellname))
-						local lenght = select(6,UnitAura(unit,spellname))
-						local uid = OhSnap:AddMessage(message,i,r,g,b,1,duration,lenght)
-						done[guid][spellname] = uid
-						if UnitIsUnit(unit, "target") then
-							table.insert(targetMsgs, uid)
-						end
-					end
-				elseif done[guid][spellname] then
-					local uid = done[guid][spellname]
-					OhSnap:DelMessage(uid)
-					done[guid][spellname] = nil
-				end
-			end
-		end
-	end
-	if done[guid] and not next(done[guid]) then
-		done[guid] = nil
-	end
-
-	if next(done) then
-		if not EventFrame:GetScript("OnUpdate") then
-			EventFrame:SetScript("OnUpdate", OhSnap.Update)
-		end
-	else
-		if EventFrame:GetScript("OnUpdate") then
-			EventFrame:SetScript("OnUpdate",nil)
-		end
-	end
+    -- Debuffs
+    local guid = UnitGUID(unit)
+    do
+        local prio = 4
+        for k,v in pairs(OhSnap.spells[prio]) do
+            local spellname = GetSpellInfo(k)
+            local targetclass = select(2,UnitClass(unit))
+            if (v.class and targetclass == v.class) or not v.class then
+                -- If the spell is on the given unit, and its not already done
+                if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
+                --if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers
+                    if not done[guid][spellname] then
+                        local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t"
+                        if v.msg then message = message.." "..v.msg.."" end
+                        local duration = select(7,UnitDebuff(unit,spellname))
+                        local lenght = select(6,UnitDebuff(unit,spellname))
+                        local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght) -- prio 4
+                        done[guid][spellname] = uid
+                        if UnitIsUnit(unit, "target") then
+                            table.insert(targetMsgs, uid)
+                        end
+                    end
+                elseif done[guid][spellname] then
+                    local uid = done[guid][spellname]
+                    OhSnap:DelMessage(uid)
+                    done[guid][spellname] = nil
+                end
+            end
+        end
+    end
+    -- Buffs
+    for prio=2,3 do
+        for k,v in pairs(OhSnap.spells[prio]) do
+            local spellname = GetSpellInfo(k)
+            local targetclass = select(2,UnitClass(unit))
+            -- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
+            if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
+                -- If the spell is on the given unit, and its not already done
+                if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+                --if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
+                    if not done[guid][spellname] then
+                        local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
+                        local r,g,b = classcolor.r,classcolor.g,classcolor.b
+                        local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t"
+                        if v.msg then message = message.." "..v.msg.."" end
+                        local duration = select(7,UnitAura(unit,spellname))
+                        local lenght = select(6,UnitAura(unit,spellname))
+                        local uid = OhSnap:AddMessage(message,prio,r,g,b,1,duration,lenght)
+                        done[guid][spellname] = uid
+                        if UnitIsUnit(unit, "target") then
+                            table.insert(targetMsgs, uid)
+                        end
+                    end
+                elseif done[guid][spellname] then
+                    local uid = done[guid][spellname]
+                    OhSnap:DelMessage(uid)
+                    done[guid][spellname] = nil
+                end
+            end
+        end
+    end
+    if done[guid] and not next(done[guid]) then
+        done[guid] = nil
+    end
+    if next(done) then
+        if not EventFrame:GetScript("OnUpdate") then
+            EventFrame:SetScript("OnUpdate", OhSnap.Update)
+        end
+    else
+        if EventFrame:GetScript("OnUpdate") then
+            EventFrame:SetScript("OnUpdate",nil)
+        end
+    end
 end
 
 function anchor:PLAYER_TARGET_CHANGED(event)
-	-- Wipe the table clean when out of arena
-	local arena = IsActiveBattlefieldArena()
-	if not arena then table.wipe(done) end
-
+    -- Wipe the table clean when out of arena
+    local arena = IsActiveBattlefieldArena()
+    if not arena then table.wipe(done) end
     for idx,uid in ipairs(targetMsgs) do
         OhSnap:DelMessage(uid)
     end
     table.wipe(targetMsgs)
-	
     if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
-	--if UnitExists("target") then -- this is to test the addon with friendly duelers!
+    --if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
-	end
+    end
 end
 
 function anchor:UNIT_AURA(event, unit)
@@ -274,16 +255,15 @@ function anchor:UNIT_AURA(event, unit)
 end
 
 function anchor:PLAYER_ENTERING_WORLD()
-	OhSnap:Clear()
+    OhSnap:Clear()
 end
 
 function anchor:PLAYER_ALIVE()
-	OhSnap:Clear()
+    OhSnap:Clear()
 end
 
 function anchor:INCOMING_SPELLCAST(event, ...)
     local arena = IsActiveBattlefieldArena()
-
     -- When we get a unit casting event, store the GUID
     if event == "UNIT_SPELLCAST_START" then
         local unit, spell = ...
@@ -291,10 +271,8 @@ function anchor:INCOMING_SPELLCAST(event, ...)
         guidmap[guid] = unit
         return
     end
-
     -- Use COMBAT_LOG_EVENT_UNFILTERED to actually catch the spellcasts from our non-targets
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-
         local timestamp, cevent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
         if cevent == "SPELL_CAST_START" then
             local unit = guidmap[sourceGUID]
@@ -302,12 +280,10 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 -- This is a unit we have an ID for at the moment so grab the target information
                 local destName = UnitName(unit .. "target")
                 local isUnit = destName and UnitName(destName)
-
                 local spellId, spellName = select(9, ...)
                 local spellTexture = select(3, GetSpellInfo(spellId))
                 local srcName = sourceName
                 local guid = sourceGUID
-
                 if arena and not destName and UnitIsEnemy("player", unit) then
                     -- This is here to ensure we don't skip it
                     destName = "Unknown"
@@ -317,28 +293,26 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 elseif not arena and isUnit and not UnitIsUnit(destName, "player") then
                     -- Ignore anything that isn't targeting us
                     return
-				end
-
-				do
-					local i = 1
-					for k,v in pairs(OhSnap.spells[i]) do
-						local spellname = GetSpellInfo(k)
-						if spellname == spellName then
-							if not done[guid][spellname] then
-								local class = select(2, UnitClass(unit)) or "PRIEST"
-								local classcolor = RAID_CLASS_COLORS[class]
-								local r,g,b = classcolor.r, classcolor.g, classcolor.b
-								local msg = string.format("%s: |T%s:0|t %s -> %s", srcName, spellTexture, spellName, destName)
-								local uid = OhSnap:AddMessage(msg, i, r, g, b)
-
-								done[guid][spellname] = uid
-								if targetMsg then 
-									table.insert(targetMsgs, uid)
-								end
-							end
-						end
-					end
-				end
+                end
+                do
+                    local prio = 1
+                    for k,v in pairs(OhSnap.spells[prio]) do
+                        local spellname = GetSpellInfo(k)
+                        if spellname == spellName then
+                            if not done[guid][spellname] then
+                                local class = select(2, UnitClass(unit)) or "PRIEST"
+                                local classcolor = RAID_CLASS_COLORS[class]
+                                local r,g,b = classcolor.r, classcolor.g, classcolor.b
+                                local msg = string.format("%s: |T%s:0|t %s -> %s", srcName, spellTexture, spellName, destName)
+                                local uid = OhSnap:AddMessage(msg, prio, r, g, b)
+                                done[guid][spellname] = uid
+                                if targetMsg then 
+                                    table.insert(targetMsgs, uid)
+                                end
+                            end
+                        end
+                    end
+                end
             end
         end
     end
@@ -373,7 +347,6 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
             return
         end
     end
-
     if done[guid] and done[guid][spellname] then
         local uid = done[guid][spellname]
         OhSnap:DelMessage(uid)
@@ -387,20 +360,19 @@ SLASH_OhSnap1 = "/ohsnap"
 SlashCmdList["OhSnap"] = function(name) 
     if OhSnapAnchor:IsVisible() then
         OhSnapAnchor:Hide()
-		OhSnap:DelMessage(TestMessage1)
-		OhSnap:DelMessage(TestMessage2)
-		OhSnap:DelMessage(TestMessage3)
-		OhSnap:DelMessage(TestMessage4)
-		TestMessage1 = nil
-		TestMessage2 = nil
-		TestMessage3 = nil
-		TestMessage4 = nil
-	else
+        OhSnap:DelMessage(TestMessage1)
+        OhSnap:DelMessage(TestMessage2)
+        OhSnap:DelMessage(TestMessage3)
+        OhSnap:DelMessage(TestMessage4)
+        TestMessage1 = nil
+        TestMessage2 = nil
+        TestMessage3 = nil
+        TestMessage4 = nil
+    else
         OhSnapAnchor:Show()
-		TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
+        TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
         TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable buffs",2,1,1,1)
         TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying buffs",3,1,1,0)
         TestMessage4 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Profitable debuffs",4,0,1,0)
-
     end
 end
