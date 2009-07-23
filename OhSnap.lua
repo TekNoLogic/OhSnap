@@ -3,16 +3,12 @@ local targetMsgs = {}
 local rows = {}
 local guidmap = {}
 local uidcount = 0
-local font = {"WorldMapTextFont","Fonts\\FRIZQT__.TTF"}
 local fonts = {
-    [1] = {32,"OUTLINE, THICKOUTLINE"},
-    [2] = {18,"OUTLINE"},
-    [3] = {14,"OUTLINE"},
-    [4] = {11,"OUTLINE"},
+    [1] = {"Fonts\\FRIZQT__.TTF", 32,"OUTLINE, THICKOUTLINE"},
+    [2] = {"Fonts\\FRIZQT__.TTF", 18,"OUTLINE"},
+    [3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
+    [4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
 }
-
--- Set up default priority fonts
-setmetatable(fonts, {__index = function(t,k) return rawget(t, 0) end})
 
 -- Automatically create the sub-tables for GUID
 local done = setmetatable({}, {__index = function(t,k)
@@ -119,8 +115,7 @@ function OhSnap:Update()
         end
         row:SetHeight(20)
         row:SetWidth(250)
-        row.text:SetFontObject(font[1])
-        row.text:SetFont(font[2],fonts[entry.pri][1],fonts[entry.pri][2])
+        row.text:SetFont(unpack(fonts[entry.pri]))
         local duration = floor(entry.dura-GetTime())
         local message
         -- Coloring the time
