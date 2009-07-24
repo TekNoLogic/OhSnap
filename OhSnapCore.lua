@@ -3,15 +3,6 @@ local targetMsgs = {}
 local rows = {}
 local guidmap = {}
 local uidcount = 0
-OhSnap.Defaults = {
-    [1] = {"Fonts\\FRIZQT__.TTF", 24,"THICKOUTLINE"},
-    [2] = {"Fonts\\FRIZQT__.TTF", 18,"OUTLINE"},
-    [3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
-    [4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
-	["ShowAnchor"] = true
-}
-
-if not OhSnapDB then OhSnapDB = OhSnap.Defaults end
 
 -- Automatically create the sub-tables for GUID
 local done = setmetatable({}, {__index = function(t,k)
@@ -118,7 +109,8 @@ function OhSnap:Update()
         end
         row:SetHeight(20)
         row:SetWidth(250)
-        row.text:SetFont(unpack(OhSnapDB[entry.pri]))
+		-- Fonts are handled with Portfolio -> Config.lua
+		row.text:SetFont(_G["OhSnapDB"]["Style"..entry.pri],_G["OhSnapDB"]["Size"..entry.pri],_G["OhSnapDB"]["Outline"..entry.pri])
         local duration = floor(entry.dura-GetTime())
         local message
         -- Coloring the time
@@ -166,8 +158,8 @@ local function unitscan(unit)
             local targetclass = select(2,UnitClass(unit))
             if (v.class and targetclass == v.class) or not v.class then
                 -- If the spell is on the given unit, and its not already done
-                --if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
-                if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers
+                if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
+                --if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers
                     if not done[guid][spellname] then
                         local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitDebuff(unit,spellname))
@@ -194,8 +186,8 @@ local function unitscan(unit)
             -- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
             if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
                 -- If the spell is on the given unit, and its not already done
-                --if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
-                if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
+                if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+                --if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
                     if not done[guid][spellname] then
                         local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
                         local r,g,b = classcolor.r,classcolor.g,classcolor.b
@@ -238,8 +230,8 @@ function anchor:PLAYER_TARGET_CHANGED(event)
         OhSnap:DelMessage(uid)
     end
     table.wipe(targetMsgs)
-    --if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
-    if UnitExists("target") then -- this is to test the addon with friendly duelers!
+    if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
+    --if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
     end
 end
@@ -252,7 +244,6 @@ end
 
 function anchor:PLAYER_ENTERING_WORLD()
     if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
-	OhSnap:ToggleAnchor(OhSnapDB["ShowAnchor"])
 end
 
 function anchor:PLAYER_ALIVE()
@@ -352,17 +343,17 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
 end)
 
 function OhSnap:ToggleAnchor(value)
-	if value then
+	if value == "1" then
 		if OhSnapAnchor:IsVisible() then return end
 		OhSnapAnchor:Show()
-		OhSnapDB["ShowAnchor"] = value
+		--OhSnapDB["ShowAnchor"] = value
 		TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
 		TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable buffs",2,1,1,1)
 		TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying buffs",3,1,1,0)
 		TestMessage4 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Profitable debuffs",4,0,1,0)
-	else
+	elseif value == "0" then
 		OhSnapAnchor:Hide()
-		OhSnapDB["ShowAnchor"] = value
+		--OhSnapDB["ShowAnchor"] = value
 		OhSnap:DelMessage(TestMessage1)
 		OhSnap:DelMessage(TestMessage2)
 		OhSnap:DelMessage(TestMessage3)

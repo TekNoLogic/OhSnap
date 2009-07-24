@@ -1,0 +1,25 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+	
+	<!-- Libs -->
+	<Script file="Portfolio\Libs\LibDefaults\LibStub.lua"/>
+	<Script file="Portfolio\Libs\LibDefaults\LibDefaults.lua"/>
+	<Script file="Portfolio\Libs\InterfaceOptionAboutPanel.lua"/>
+
+	<!-- Portfolio -->
+	<Script file="Portfolio\Portfolio.lua"/>
+	<Script file="Portfolio\RegisterControl.lua"/>
+	<Script file="Portfolio\Control.lua"/>
+	
+	<Script file="Portfolio\Control\Button.lua"/>
+	<Script file="Portfolio\Control\Checkbox.lua"/>
+	<Script file="Portfolio\Control\ColorPicker.lua"/>
+	<Script file="Portfolio\Control\Dropdown.lua"/>
+	<Script file="Portfolio\Control\EditBox.lua"/>
+	<Script file="Portfolio\Control\Header.lua"/>
+	<Script file="Portfolio\Control\Slider.lua"/>
+	<Script file="Portfolio\Control\Text.lua"/>
+	<Script file="Portfolio\Control\Window.lua"/>
+	
+</Ui>
+
