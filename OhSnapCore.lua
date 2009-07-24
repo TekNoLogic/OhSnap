@@ -9,6 +9,7 @@ OhSnap.Defaults = {
     [3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
     [4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
 	["ShowAnchor"] = true,	
+	["TestMode"] = false,
 }
 
 if not OhSnapDB then OhSnapDB = OhSnap.Defaults end
@@ -44,7 +45,9 @@ function OhSnap:Initialize()
     end)
     anchor:SetScript("OnMouseUp", function(self, button)
         self:StopMovingOrSizing()
+		OhSnap:SavePosition()
     end)
+
 end
 
 -- Adds a message to the alert frame, returns a uid
@@ -150,6 +153,7 @@ anchor:RegisterEvent("PLAYER_TARGET_CHANGED")
 anchor:RegisterEvent("UNIT_AURA")
 anchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 anchor:RegisterEvent("PLAYER_ALIVE")
+anchor:RegisterEvent("PLAYER_LOGIN")
 anchor:RegisterEvent("UNIT_SPELLCAST_START")
 anchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 anchor:SetScript("OnEvent", function(self, event, ...)
@@ -166,9 +170,8 @@ local function unitscan(unit)
             local targetclass = select(2,UnitClass(unit))
             if (v.class and targetclass == v.class) or not v.class then
                 -- If the spell is on the given unit, and its not already done
-                if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitDebuff(unit, spellname) then
-                --if UnitDebuff(unit, spellname) then -- this is to test the addon with friendly duelers
-                    if not done[guid][spellname] then
+				if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
+					if not done[guid][spellname] then
                         local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitDebuff(unit,spellname))
                         local lenght = select(6,UnitDebuff(unit,spellname))
@@ -194,7 +197,7 @@ local function unitscan(unit)
             -- Mages have Spellsteal. Let's imagine they can have all the buffs listed :)
             if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
                 -- If the spell is on the given unit, and its not already done
-                if UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitAura(unit, spellname) then
+                if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitAura(unit, spellname) then
                 --if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
                     if not done[guid][spellname] then
                         local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
@@ -238,7 +241,7 @@ function anchor:PLAYER_TARGET_CHANGED(event)
         OhSnap:DelMessage(uid)
     end
     table.wipe(targetMsgs)
-    if UnitExists("target") and UnitIsPlayer("target") and not UnitIsFriend("player", "target") then
+    if UnitExists("target") and ((UnitIsPlayer("target") and not UnitIsFriend("player", "target")) or OhSnapDB.TestMode) then
     --if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
     end
@@ -253,11 +256,17 @@ end
 function anchor:PLAYER_ENTERING_WORLD()
     if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
 	OhSnap:ToggleAnchor(OhSnapDB["ShowAnchor"])
+	--OhSnap:RestorePosition()
 end
 
 function anchor:PLAYER_ALIVE()
 	if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
 end
+
+function anchor:PLAYER_LOGIN(event,addon)
+	OhSnap:RestorePosition()
+end
+
 
 function anchor:INCOMING_SPELLCAST(event, ...)
     local arena = IsActiveBattlefieldArena()
@@ -350,6 +359,47 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
         done[guid][spellname] = nil
     end
 end)
+
+function OhSnap:SavePosition()
+    local f = OhSnapAnchor
+    local x,y = f:GetLeft(), f:GetTop()
+    local s = f:GetEffectiveScale()
+    
+    x,y = x*s,y*s
+    
+	local opt = OhSnapDB.Position
+	if not opt then 
+		OhSnapDB.Position = {}
+		opt = OhSnapDB.Position
+	end
+    opt.PosX = x
+    opt.PosY = y
+end
+
+function OhSnap:RestorePosition()
+	local f = OhSnapAnchor
+	local opt = OhSnapDB.Position
+	if not opt then 
+		OhSnapDB.Position = {}
+		opt = OhSnapDB.Position
+	end
+
+	local x = opt.PosX
+	local y = opt.PosY
+
+    local s = f:GetEffectiveScale()
+        
+    if not x or not y then
+        f:ClearAllPoints()
+        f:SetPoint("CENTER", 0, 300)
+        return 
+    end
+
+    x,y = x/s,y/s
+
+    f:ClearAllPoints()
+	f:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+end
 
 function OhSnap:ToggleAnchor(value)
 	if value then

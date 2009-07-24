@@ -5,12 +5,21 @@ local function Options(self, anchor)
    
 	local lock = self:MakeToggle(
 		'name', 'Show anchor',
-		'description', 'Toggle the visibility of text anchor',
+		'description', 'Visibility of text anchor',
 		'default', true,
 		'getFunc', function() return OhSnapDB["ShowAnchor"] end,
 		'setFunc', function(value) OhSnap:ToggleAnchor(value) end
 	)
 	lock:SetPoint("TOPLEFT", subText, "BOTTOMLEFT", 0, -5)
+
+	local test= self:MakeToggle(
+		'name', 'Test mode',
+		'description', 'Show messages on friendly targets (ie. Target Dummies)',
+		'default', false,
+		'getFunc', function() return OhSnapDB["TestMode"] end,
+		'setFunc', function(value) OhSnapDB["TestMode"] = value; OhSnap:Update() end
+	)
+	test:SetPoint("LEFT", lock, "RIGHT", 250, 0)
 
 	local f = CreateFrame("Frame")
     for i=1,4 do
