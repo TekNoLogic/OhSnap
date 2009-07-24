@@ -861,8 +861,7 @@ do
 			if not args.hasAlpha then
 				currentA = 1
 			else
---				currentR = args.currentA
-				currentA = args.currentA
+				currentR = args.currentA
 			end
 		end
 		
@@ -909,10 +908,8 @@ do
 			hasOpacity = args.hasAlpha,
 			opacityFunc = args.hasAlpha and swatchFunc_wrapper or nil,
 			r = currentR,
-			g = currentG,
-			b = currentB,
---			g = currentB,
---			b = currentG,
+			g = currentB,
+			b = currentG,
 			opacity = args.hasAlpha and 1 - currentA or nil,
 			cancelFunc = cancelFunc_wrapper,
 		}
