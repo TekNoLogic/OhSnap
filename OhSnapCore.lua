@@ -382,6 +382,7 @@ SlashCmdList["OhSnap"] = function(name)
 	elseif name == "show" then
 		OhSnap:ToggleAnchor(true)
 	elseif name == "gui" then
+		InterfaceOptionsFrame_OpenToCategory(OhSnap_Panel)
 	elseif not name or name == "" then
 		ChatFrame1:AddMessage("OhSnap slashcommand:")
 		ChatFrame1:AddMessage(" /ohsnap show - will show the anchor")

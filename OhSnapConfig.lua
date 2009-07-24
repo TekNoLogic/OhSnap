@@ -3,28 +3,10 @@ local anchor
 local function Options(self, anchor)
     local title, subText = self:MakeTitleTextAndSubText("OhSnap", "OhSnap Configuration")
    
-   	local reset = self:MakeButton(
-	    'name', "Defaults",
-	    'description', "Resets settings to defaults",
-	    'func', function()
-			OhSnapDB = {
-				[1] = {"Fonts\\FRIZQT__.TTF", 24,"THICKOUTLINE"},
-				[2] = {"Fonts\\FRIZQT__.TTF", 18,"OUTLINE"},
-				[3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
-				[4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
-				["ShowAnchor"] = true
-			}
-			OhSnapAnchor:ClearAllPoints()
-			OhSnapAnchor:SetPoint("CENTER", 0, 300)
-			OhSnap:Update()
-			self:Refresh()
-	end)
-	reset:SetPoint("TOPRIGHT", self, "TOPRIGHT", -10, -10)	
-	
 	local lock = self:MakeToggle(
 		'name', 'Show anchor',
 		'description', 'Toggle the visibility of text anchor',
-		'default', false,
+		'default', true,
 		'getFunc', function() return OhSnapDB["ShowAnchor"] end,
 		'setFunc', function(value) OhSnap:ToggleAnchor(value) end
 	)
