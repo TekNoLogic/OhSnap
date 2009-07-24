@@ -6,7 +6,7 @@ local Portfolio = LibStub and LibStub("Portfolio")
 if not Portfolio then return end
 
 local Sizex,Sizey = 0,-15
-local headerx,headery = 0,-25
+local Headerx,Headery = 0,-25
 local Outlinex,Outliney = 135,7
 local Stylex,Styley = 15,7
 
@@ -27,7 +27,7 @@ local optionTable = {
 			callback = function(value) OhSnap:ToggleAnchor(value) end;
         };
 		{
-			id = "Fontheader1";
+			id = "Header1";
 			text = "Priority 1";
 			type = CONTROLTYPE_HEADER;
 			point = {"TOPLEFT", "Anchor", "BOTTOMLEFT", 0, -10};
@@ -44,7 +44,7 @@ local optionTable = {
 			type = CONTROLTYPE_SLIDER;
 			defaultValue = 24;
 			callback = myCallback;
-			point = {"TOPLEFT", "Fontheader1", "BOTTOMLEFT", sizex, sizey};
+			point = {"TOPLEFT", "Header1", "BOTTOMLEFT", sizex, sizey};
 		};
 		{
 			id = "Style1";
@@ -106,10 +106,10 @@ local optionTable = {
 		};
 
 		{
-			id = "Fontheader2";
+			id = "Header2";
 			text = "Priority 2";
 			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Size1", "BOTTOMLEFT", headerx, headery};
+			point = {"TOPLEFT", "Size1", "BOTTOMLEFT", Headerx, Headery};
 		};
 		{
 			id = "Size2";
@@ -123,7 +123,7 @@ local optionTable = {
 			type = CONTROLTYPE_SLIDER;
 			defaultValue = 18;
 			callback = myCallback;
-			point = {"TOPLEFT", "Fontheader2", "BOTTOMLEFT", Sizex, Sizey};
+			point = {"TOPLEFT", "Header2", "BOTTOMLEFT", Sizex, Sizey};
 		};
 		{
 			id = "Style2";
@@ -185,10 +185,10 @@ local optionTable = {
 		};
 
 		{
-			id = "Fontheader3";
+			id = "Header3";
 			text = "Priority 3";
 			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Size2", "BOTTOMLEFT", headerx, headery};
+			point = {"TOPLEFT", "Size2", "BOTTOMLEFT", Headerx, Headery};
 		};
 		{
 			id = "Size3";
@@ -202,7 +202,7 @@ local optionTable = {
 			type = CONTROLTYPE_SLIDER;
 			defaultValue = 14;
 			callback = myCallback;
-			point = {"TOPLEFT", "Fontheader3", "BOTTOMLEFT", Sizex, Sizey};
+			point = {"TOPLEFT", "Header3", "BOTTOMLEFT", Sizex, Sizey};
 		};
 		{
 			id = "Style3";
@@ -264,10 +264,10 @@ local optionTable = {
 		};
 
 		{
-			id = "Fontheader4";
+			id = "Header4";
 			text = "Priority 4";
 			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Size3", "BOTTOMLEFT", headerx, headery};
+			point = {"TOPLEFT", "Size3", "BOTTOMLEFT", Headerx, Headery};
 		};
 		{
 			id = "Size4";
@@ -281,7 +281,7 @@ local optionTable = {
 			type = CONTROLTYPE_SLIDER;
 			defaultValue = 11;
 			callback = myCallback;
-			point = {"TOPLEFT", "Fontheader4", "BOTTOMLEFT", Sizex, Sizey};
+			point = {"TOPLEFT", "Header4", "BOTTOMLEFT", Sizex, Sizey};
 		};
 		{
 			id = "Style4";
