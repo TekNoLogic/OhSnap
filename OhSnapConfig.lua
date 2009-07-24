@@ -1,349 +1,95 @@
-﻿if (not OhSnap) then
-	OhSnap = {}
+﻿local LibSimpleOptions = LibStub("LibSimpleOptions-1.0")
+local anchor
+local function Options(self, anchor)
+    local title, subText = self:MakeTitleTextAndSubText("OhSnap", "OhSnap Configuration")
+   
+   	local reset = self:MakeButton(
+	    'name', "Defaults",
+	    'description', "Resets settings to defaults",
+	    'func', function()
+			OhSnapDB = {
+				[1] = {"Fonts\\FRIZQT__.TTF", 24,"THICKOUTLINE"},
+				[2] = {"Fonts\\FRIZQT__.TTF", 18,"OUTLINE"},
+				[3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
+				[4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
+				["ShowAnchor"] = true
+			}
+			OhSnapAnchor:ClearAllPoints()
+			OhSnapAnchor:SetPoint("CENTER", 0, 300)
+			OhSnap:Update()
+			self:Refresh()
+	end)
+	reset:SetPoint("TOPRIGHT", self, "TOPRIGHT", -10, -10)	
+	
+	local lock = self:MakeToggle(
+		'name', 'Show anchor',
+		'description', 'Toggle the visibility of text anchor',
+		'default', false,
+		'getFunc', function() return OhSnapDB["ShowAnchor"] end,
+		'setFunc', function(value) OhSnap:ToggleAnchor(value) end
+	)
+	lock:SetPoint("TOPLEFT", subText, "BOTTOMLEFT", 0, -5)
+
+	local f = CreateFrame("Frame")
+    for i=1,4 do
+		local slider = self:MakeSlider(
+			'name', "Size",
+			'description', "Size of font",
+			'minText', '8',
+			'maxText', '24',
+			'minValue', 8,
+			'maxValue', 24,
+			'step', 1,
+			'default', OhSnap.Defaults[i][2],
+			'getFunc', function(value) value = OhSnapDB[i][2] return OhSnapDB[i][2] end,    
+			'setFunc', function(value) OhSnapDB[i][2] = value; OhSnap:Update() end,
+			'currentTextFunc', function(value) return value
+		end)
+		if not anchor then slider:SetPoint("TOPLEFT", subText, "BOTTOMLEFT", 0, -65)
+		else slider:SetPoint("TOP", anchor, "BOTTOM", 0, -65) end
+		anchor = slider
+
+		local text = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		text:SetPoint("BOTTOMLEFT",anchor,"TOPLEFT",0,15)
+		text:SetText("Priority "..i.." Font settings")
+		text:SetParent(self)
+
+		local dropdown = self:MakeDropDown(
+			'name', "Font",
+			'description', "Select font to be used",
+			'values', {
+				'Fonts\\FRIZQT__.TTF', "Frizqt",
+				'Fonts\\ARIALN.TTF', "Arialn",
+				'Fonts\\skurri.ttf', "Skurri",
+				'Fonts\\MORPHEUS.ttf', "Morpheus",
+			 },
+			'default', OhSnapDB[i][1],
+			'getFunc', function() 
+				return OhSnapDB[i][1] 
+			end,
+			'setFunc', function(value)
+				if value == 'Fonts\\FRIZQT__.TTF' or value == 'Fonts\\ARIALN.TTF' or value == 'Fonts\\skurri.ttf' or value == 'Fonts\\MORPHEUS.ttf' then OhSnapDB[i][1] = value; OhSnap:Update() end
+		end)
+		dropdown:SetPoint("LEFT", anchor, "RIGHT", -5, -10)	
+
+		local dropdown = self:MakeDropDown(
+			'name', "Outline",
+			'description', "Font Outline",
+			'values', {
+				'OUTLINE, THICKOUTLINE', "Thick",
+				'OUTLINE', "Thin",
+				'', "None",
+			 },
+			'default', OhSnapDB[i][3],
+			'getFunc', function() 
+				return OhSnapDB[i][3] 
+			end,
+			'setFunc', function(value)
+				if value == 'THICKOUTLINE' or value == 'OUTLINE' or value == '' then OhSnapDB[i][3] = value; OhSnap:Update() end
+		end)
+		dropdown:SetPoint("LEFT", anchor, "RIGHT", 110, -10)	
+
+    end
 end
-local lib = LibStub("LibDefaults")
-local Portfolio = LibStub and LibStub("Portfolio")
-if not Portfolio then return end
 
-local Sizex,Sizey = 0,-15
-local Headerx,Headery = 0,-25
-local Outlinex,Outliney = 135,7
-local Stylex,Styley = 15,7
-
-local myCallback = function() OhSnap:Update() end;
-
-local optionTable = {
-    id="OhSnap";
-    text="OhSnap";
-    addon="OhSnap";
-    about=true;
-    options = {
-        {
-            id = "Anchor";
-            text = "Show Anchor";
-            tooltipText = "Show the Alerts anchor of OhSnap";
-            type = CONTROLTYPE_CHECKBOX;
-            defaultValue = "1";
-			callback = function(value) OhSnap:ToggleAnchor(value) end;
-        };
-		{
-			id = "Header1";
-			text = "Priority 1";
-			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Anchor", "BOTTOMLEFT", 0, -10};
-		};
-		{
-			id = "Size1";
-			text = "Size %s";
-			tooltipText = "Size of priority 1.";
-			minText = "8";
-			maxText = "24";
-			minValue = 8;
-			maxValue = 24;
-			valueStep = 1;
-			type = CONTROLTYPE_SLIDER;
-			defaultValue = 24;
-			callback = myCallback;
-			point = {"TOPLEFT", "Header1", "BOTTOMLEFT", sizex, sizey};
-		};
-		{
-			id = "Style1";
-			headerText = "Style";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "Fonts\\FRIZQT__.TTF";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font style";
-				};
-				{
-					text = "FRIZQT";
-					value = "Fonts\\FRIZQT__.TTF";
-				};
-				{
-					text = "ARIALN";
-					value = "Fonts\\ARIALN.TTF";
-				};
-				{
-					text = "skurri";
-					value = "Fonts\\skurri.ttf";
-				};
-				{
-					text = "MORPHEUS";
-					value = "Fonts\\MORPHEUS.ttf";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size1", "TOPRIGHT", Stylex, Styley};
-		};
-		{
-			id = "Outline1";
-			headerText = "Outline";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "THICKOUTLINE";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font outline";
-				};
-				{
-					text = "Thick";
-					value = "THICKOUTLINE";
-				};
-				{
-					text = "Thin";
-					value = "OUTLINE";
-				};
-				{
-					text = "None";
-					value = "";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size1", "TOPRIGHT", Outlinex, Outliney};
-		};
-
-		{
-			id = "Header2";
-			text = "Priority 2";
-			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Size1", "BOTTOMLEFT", Headerx, Headery};
-		};
-		{
-			id = "Size2";
-			text = "Size %s";
-			tooltipText = "Size of priority 2.";
-			minText = "8";
-			maxText = "24";
-			minValue = 8;
-			maxValue = 24;
-			valueStep = 1;
-			type = CONTROLTYPE_SLIDER;
-			defaultValue = 18;
-			callback = myCallback;
-			point = {"TOPLEFT", "Header2", "BOTTOMLEFT", Sizex, Sizey};
-		};
-		{
-			id = "Style2";
-			headerText = "Style";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "Fonts\\FRIZQT__.TTF";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font style";
-				};
-				{
-					text = "FRIZQT";
-					value = "Fonts\\FRIZQT__.TTF";
-				};
-				{
-					text = "ARIALN";
-					value = "Fonts\\ARIALN.TTF";
-				};
-				{
-					text = "skurri";
-					value = "Fonts\\skurri.ttf";
-				};
-				{
-					text = "MORPHEUS";
-					value = "Fonts\\MORPHEUS.ttf";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size2", "TOPRIGHT", Stylex, Styley};
-		};
-		{
-			id = "Outline2";
-			headerText = "Outline";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "OUTLINE";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font outline";
-				};
-				{
-					text = "Thick";
-					value = "THICKOUTLINE";
-				};
-				{
-					text = "Thin";
-					value = "OUTLINE";
-				};
-				{
-					text = "None";
-					value = "";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size2", "TOPRIGHT", Outlinex, Outliney}
-		};
-
-		{
-			id = "Header3";
-			text = "Priority 3";
-			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Size2", "BOTTOMLEFT", Headerx, Headery};
-		};
-		{
-			id = "Size3";
-			text = "Size %s";
-			tooltipText = "Size of priority 3.";
-			minText = "8";
-			maxText = "24";
-			minValue = 8;
-			maxValue = 24;
-			valueStep = 1;
-			type = CONTROLTYPE_SLIDER;
-			defaultValue = 14;
-			callback = myCallback;
-			point = {"TOPLEFT", "Header3", "BOTTOMLEFT", Sizex, Sizey};
-		};
-		{
-			id = "Style3";
-			headerText = "Style";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "Fonts\\FRIZQT__.TTF";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font style";
-				};
-				{
-					text = "FRIZQT";
-					value = "Fonts\\FRIZQT__.TTF";
-				};
-				{
-					text = "ARIALN";
-					value = "Fonts\\ARIALN.TTF";
-				};
-				{
-					text = "skurri";
-					value = "Fonts\\skurri.ttf";
-				};
-				{
-					text = "MORPHEUS";
-					value = "Fonts\\MORPHEUS.ttf";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size3", "TOPRIGHT", Stylex, Styley};
-		};
-		{
-			id = "Outline3";
-			headerText = "Outline";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "OUTLINE";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font outline";
-				};
-				{
-					text = "Thick";
-					value = "THICKOUTLINE";
-				};
-				{
-					text = "Thin";
-					value = "OUTLINE";
-				};
-				{
-					text = "None";
-					value = "";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size3", "TOPRIGHT", Outlinex, Outliney}
-		};
-
-		{
-			id = "Header4";
-			text = "Priority 4";
-			type = CONTROLTYPE_HEADER;
-			point = {"TOPLEFT", "Size3", "BOTTOMLEFT", Headerx, Headery};
-		};
-		{
-			id = "Size4";
-			text = "Size %s";
-			tooltipText = "Size of priority 4.";
-			minText = "8";
-			maxText = "24";
-			minValue = 8;
-			maxValue = 24;
-			valueStep = 1;
-			type = CONTROLTYPE_SLIDER;
-			defaultValue = 11;
-			callback = myCallback;
-			point = {"TOPLEFT", "Header4", "BOTTOMLEFT", Sizex, Sizey};
-		};
-		{
-			id = "Style4";
-			headerText = "Style";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "Fonts\\FRIZQT__.TTF";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font style";
-				};
-				{
-					text = "FRIZQT";
-					value = "Fonts\\FRIZQT__.TTF";
-				};
-				{
-					text = "ARIALN";
-					value = "Fonts\\ARIALN.TTF";
-				};
-				{
-					text = "skurri";
-					value = "Fonts\\skurri.ttf";
-				};
-				{
-					text = "MORPHEUS";
-					value = "Fonts\\MORPHEUS.ttf";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size4", "TOPRIGHT", Stylex, Styley};
-		};
-		{
-			id = "Outline4";
-			headerText = "Outline";
-			tooltipText = "You can select which font you want to use";
-			type = CONTROLTYPE_DROPDOWN;
-			defaultValue = "OUTLINE";
-			menuList = {
-				{
-					isTitle = 1;
-					text = "Font outline";
-				};
-				{
-					text = "Thick";
-					value = "THICKOUTLINE";
-				};
-				{
-					text = "Thin";
-					value = "OUTLINE";
-				};
-				{
-					text = "None";
-					value = "";
-				};
-			};
-			callback = myCallback;
-			point = {"TOPLEFT", "Size4", "TOPRIGHT", Outlinex, Outliney};
-		};
-		
-	};
-    savedVarTable = "OhSnapDB";
-}
-
-Portfolio.RegisterOptionSet(optionTable)
+LibSimpleOptions.AddOptionsPanel("OhSnap", function(self) Options(self, anchor) end)

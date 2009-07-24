@@ -3,6 +3,15 @@ local targetMsgs = {}
 local rows = {}
 local guidmap = {}
 local uidcount = 0
+OhSnap.Defaults = {
+    [1] = {"Fonts\\FRIZQT__.TTF", 24,"OUTLINE, THICKOUTLINE"},
+    [2] = {"Fonts\\FRIZQT__.TTF", 18,"OUTLINE"},
+    [3] = {"Fonts\\FRIZQT__.TTF", 14,"OUTLINE"},
+    [4] = {"Fonts\\FRIZQT__.TTF", 11,"OUTLINE"},
+	["ShowAnchor"] = true,	
+}
+
+if not OhSnapDB then OhSnapDB = OhSnap.Defaults end
 
 -- Automatically create the sub-tables for GUID
 local done = setmetatable({}, {__index = function(t,k)
@@ -109,8 +118,7 @@ function OhSnap:Update()
         end
         row:SetHeight(20)
         row:SetWidth(250)
-		-- Fonts are handled with Portfolio -> Config.lua
-		row.text:SetFont(_G["OhSnapDB"]["Style"..entry.pri],_G["OhSnapDB"]["Size"..entry.pri],_G["OhSnapDB"]["Outline"..entry.pri])
+		row.text:SetFont(unpack(OhSnapDB[entry.pri]))
         local duration = floor(entry.dura-GetTime())
         local message
         -- Coloring the time
@@ -244,6 +252,7 @@ end
 
 function anchor:PLAYER_ENTERING_WORLD()
     if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
+	OhSnap:ToggleAnchor(OhSnapDB["ShowAnchor"])
 end
 
 function anchor:PLAYER_ALIVE()
@@ -343,17 +352,17 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
 end)
 
 function OhSnap:ToggleAnchor(value)
-	if value == "1" then
+	if value then
 		if OhSnapAnchor:IsVisible() then return end
 		OhSnapAnchor:Show()
-		--OhSnapDB["ShowAnchor"] = value
+		OhSnapDB["ShowAnchor"] = value
 		TestMessage1 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Dangerous spells",1,1,0,0)
 		TestMessage2 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Noticeable buffs",2,1,1,1)
 		TestMessage3 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Annoying buffs",3,1,1,0)
 		TestMessage4 = OhSnap:AddMessage("|TInterface\\Icons\\INV_Misc_Bone_HumanSkull_02:0|t Profitable debuffs",4,0,1,0)
-	elseif value == "0" then
+	else
 		OhSnapAnchor:Hide()
-		--OhSnapDB["ShowAnchor"] = value
+		OhSnapDB["ShowAnchor"] = value
 		OhSnap:DelMessage(TestMessage1)
 		OhSnap:DelMessage(TestMessage2)
 		OhSnap:DelMessage(TestMessage3)

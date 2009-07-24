@@ -1,4 +1,4 @@
---OhSnap = {}
+OhSnap = {}
 OhSnap.spells = {}
 -- Debuffs tracked
 OhSnap.spells[4] = {
