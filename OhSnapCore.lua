@@ -202,7 +202,7 @@ local function unitscan(unit)
                     if not done[guid][spellname] then
                         local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
                         local r,g,b = classcolor.r,classcolor.g,classcolor.b
-                        local message = v["multi"] and ("Multiple" or UnitName(unit):match("[^-]+")).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
+                        local message = (v["multi"] and "" or UnitName(unit):match("[^-]+")..": ").. "|T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitAura(unit,spellname))
                         local lenght = select(6,UnitAura(unit,spellname))
                         local uid = OhSnap:AddMessage(message,prio,r,g,b,1,duration,lenght)

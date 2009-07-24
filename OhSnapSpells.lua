@@ -11,6 +11,11 @@ OhSnap.spells[4] = {
 	-- Priest
 		-- Weakened Soul
 		[6788] = {msg = "Can't be Shielded"},
+	-- Shaman
+		-- Exhaustion
+		[57723] = {msg = "Can't use Heroism"},
+		-- Sated
+		[57724] = {msg = "Can't use Bloodlust"},
 }
 -- Buffs tracked
 OhSnap.spells[3] = {
@@ -72,7 +77,7 @@ OhSnap.spells[3] = {
 		[51690] = {msg = "+20% Damage", class = "ROGUE"},
 	-- Shaman
 		-- Grounding Totem Effect
-		[8178] = {msg = "Grounded"},
+		[8178] = {msg = "Grounding Totem", multi = true},
 		-- Shamanistic Rage
 		[30823] = {msg = "30% Shield", class = "SHAMAN"},
 	-- Warlock
@@ -131,9 +136,9 @@ OhSnap.spells[2] = {
 		[31224] = {msg = "90% Resist", class = "ROGUE"},
 	-- Shaman
 		-- Bloodlust
-		[2825] = {msg = "30% Haste"},
+		[2825] = {msg = "30% Haste", multi = true},
 		-- Heroism
-		[32182] = {msg = "30% Haste"},
+		[32182] = {msg = "30% Haste", multi = true},
 	-- Warrior
 		-- Retaliation
 		[20230] = {msg = "Returns damage", class = "WARRIOR"},
