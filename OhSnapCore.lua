@@ -172,7 +172,9 @@ local function unitscan(unit)
                 -- If the spell is on the given unit, and its not already done
 				if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
 					if not done[guid][spellname] then
-                        local message = UnitName(unit).. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
+						local name = UnitName(unit)
+						if (string.find(name, "-", 1, true)) then name = string.gsub(name, "(.-)%-.*", "%1") end
+                        local message = name.. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitDebuff(unit,spellname))
                         local lenght = select(6,UnitDebuff(unit,spellname))
                         local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght)
@@ -198,11 +200,12 @@ local function unitscan(unit)
             if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
                 -- If the spell is on the given unit, and its not already done
                 if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitAura(unit, spellname) then
-                --if UnitAura(unit, spellname) then -- this is to test the addon with friendly duelers!
                     if not done[guid][spellname] then
+						local name = UnitName(unit)
+						if (string.find(name, "-", 1, true)) then name = string.gsub(name, "(.-)%-.*", "%1") end
                         local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
                         local r,g,b = classcolor.r,classcolor.g,classcolor.b
-                        local message = UnitName(unit).. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
+                        local message = name.. ": |T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
                         local duration = select(7,UnitAura(unit,spellname))
                         local lenght = select(6,UnitAura(unit,spellname))
                         local uid = OhSnap:AddMessage(message,prio,r,g,b,1,duration,lenght)
@@ -242,7 +245,6 @@ function anchor:PLAYER_TARGET_CHANGED(event)
     end
     table.wipe(targetMsgs)
     if UnitExists("target") and ((UnitIsPlayer("target") and not UnitIsFriend("player", "target")) or OhSnapDB.TestMode) then
-    --if UnitExists("target") then -- this is to test the addon with friendly duelers!
         unitscan("target")
     end
 end
@@ -306,10 +308,12 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                         local spellname = GetSpellInfo(k)
                         if spellname == spellName then
                             if not done[guid][spellname] then
+								local name = srcName
+								if (string.find(name, "-", 1, true)) then name = string.gsub(name, "(.-)%-.*", "%1") end
                                 local class = select(2, UnitClass(unit)) or "PRIEST"
                                 local classcolor = RAID_CLASS_COLORS[class]
                                 local r,g,b = classcolor.r, classcolor.g, classcolor.b
-                                local msg = string.format("%s: |T%s:0|t %s -> %s", srcName, spellTexture, spellName, destName)
+                                local msg = string.format("%s: |T%s:0|t %s -> %s", name, spellTexture, spellName, destName)
                                 local uid = OhSnap:AddMessage(msg, prio, r, g, b)
                                 done[guid][spellname] = uid
                                 if targetMsg then 
