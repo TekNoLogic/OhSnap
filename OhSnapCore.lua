@@ -163,29 +163,27 @@ end)
 local function unitscan(unit)
     -- Debuffs
     local guid = UnitGUID(unit)
-    do
-        local prio = 4
-        for k,v in pairs(OhSnap.spells[prio]) do
-            local spellname = GetSpellInfo(k)
-            local targetclass = select(2,UnitClass(unit))
-            if (v.class and targetclass == v.class) or not v.class then
-                -- If the spell is on the given unit, and its not already done
-				if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
-					if not done[guid][spellname] then
-                        local message = UnitName(unit):match("[^-]+").. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
-                        local duration = select(7,UnitDebuff(unit,spellname))
-                        local lenght = select(6,UnitDebuff(unit,spellname))
-                        local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght)
-                        done[guid][spellname] = uid
-                        if UnitIsUnit(unit, "target") then
-                            table.insert(targetMsgs, uid)
-                        end
+    local prio = 4
+    for k,v in pairs(OhSnap.spells[prio]) do
+        local spellname = GetSpellInfo(k)
+        local targetclass = select(2,UnitClass(unit))
+        if (v.class and targetclass == v.class) or not v.class then
+            -- If the spell is on the given unit, and its not already done
+            if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
+                if not done[guid][spellname] then
+                    local message = UnitName(unit):match("[^-]+").. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
+                    local duration = select(7,UnitDebuff(unit,spellname))
+                    local lenght = select(6,UnitDebuff(unit,spellname))
+                    local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght)
+                    done[guid][spellname] = uid
+                    if UnitIsUnit(unit, "target") then
+                        table.insert(targetMsgs, uid)
                     end
-                elseif done[guid][spellname] then
-                    local uid = done[guid][spellname]
-                    OhSnap:DelMessage(uid)
-                    done[guid][spellname] = nil
                 end
+            elseif done[guid][spellname] then
+                local uid = done[guid][spellname]
+                OhSnap:DelMessage(uid)
+                done[guid][spellname] = nil
             end
         end
     end
@@ -299,21 +297,19 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                     -- Ignore anything that isn't targeting us
                     return
                 end
-                do
-                    local prio = 1
-                    for k,v in pairs(OhSnap.spells[prio]) do
-                        local spellname = GetSpellInfo(k)
-                        if spellname == spellName then
-                            if not done[guid][spellname] then
-								local class = select(2, UnitClass(unit)) or "PRIEST"
-                                local classcolor = RAID_CLASS_COLORS[class]
-                                local r,g,b = classcolor.r, classcolor.g, classcolor.b
-                                local msg = string.format("%s: |T%s:0|t %s -> %s", srcName:match("[^-]+"), spellTexture, spellName, destName)
-                                local uid = OhSnap:AddMessage(msg, prio, r, g, b)
-                                done[guid][spellname] = uid
-                                if targetMsg then 
-                                    table.insert(targetMsgs, uid)
-                                end
+                local prio = 1
+                for k,v in pairs(OhSnap.spells[prio]) do
+                    local spellname = GetSpellInfo(k)
+                    if spellname == spellName then
+                        if not done[guid][spellname] then
+                            local class = select(2, UnitClass(unit)) or "PRIEST"
+                            local classcolor = RAID_CLASS_COLORS[class]
+                            local r,g,b = classcolor.r, classcolor.g, classcolor.b
+                            local msg = string.format("%s: |T%s:0|t %s -> %s", srcName:match("[^-]+"), spellTexture, spellName, destName)
+                            local uid = OhSnap:AddMessage(msg, prio, r, g, b)
+                            done[guid][spellName] = uid
+                            if targetMsg then 
+                                table.insert(targetMsgs, uid)
                             end
                         end
                     end
@@ -333,7 +329,7 @@ EventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
 EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-EventFrame:SetScript("OnEvent",function(self, event, ...)
+EventFrame:SetScript("OnEvent", function(self, event, ...)
     local guid, spellname
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local cevent, srcGUID = ...
@@ -344,16 +340,14 @@ EventFrame:SetScript("OnEvent",function(self, event, ...)
             return
         end
     else
-        local unit, name = ...
-        if unit == "target" and UnitExists("targettarget") and UnitIsUnit("targettarget", "player") then
-            guid = UnitGUID(unit)
-            spellname = name
-        else
-            return
-        end
+        -- One of the UNIT_ events
+        local unit, spell = ...
+        guid = UnitGUID(unit)
+        spellname = spell
     end
-    if done[guid] and done[guid][spellname] then
-        local uid = done[guid][spellname]
+
+    local uid = done[guid][spellname]
+    if uid then 
         OhSnap:DelMessage(uid)
         done[guid][spellname] = nil
     end
