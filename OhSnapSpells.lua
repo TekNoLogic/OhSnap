@@ -143,6 +143,8 @@ OhSnap.spells[1] = {
 		-- Scare Beast
 		[14327] = {},
 	-- Mage
+		-- Evocation
+		[12051] = {notarget = true},
 		-- Polymorph
 		[12825] = {},
 		-- Polymorph: Turtle
@@ -170,8 +172,6 @@ OhSnap.spells[1] = {
 	-- Shaman
 		-- Hex
 		[51514] = {},
-		-- Feral Spirit
-		[51533] = {notarget = true},
 	-- Warlock
 		-- Summon Imp
 		[688] = {notarget = true},
@@ -182,13 +182,13 @@ OhSnap.spells[1] = {
 		-- Summon Succubus
 		[712] = {notarget = true},
 		-- Drain Mana
-		[5138] = {},
+		--[5138] = {},
 		-- Fear
 		[6215] = {},
 		-- Banish
 		[17928] = {},
 		-- Drain Life
-		[18647] = {},
+		--[47857] = {},
 		-- Summon Felguard
 		[30146] = {notarget = true},
 		-- Howl of Terror

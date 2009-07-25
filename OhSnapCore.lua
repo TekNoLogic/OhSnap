@@ -346,11 +346,11 @@ end
 anchor.UNIT_SPELLCAST_START = anchor.INCOMING_SPELLCAST
 anchor.COMBAT_LOG_EVENT_UNFILTERED = anchor.INCOMING_SPELLCAST
 
-EventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
-EventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
-EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+--EventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+--EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+--EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+--EventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+--EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 EventFrame:SetScript("OnEvent", function(self, event, ...)
