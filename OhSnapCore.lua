@@ -290,7 +290,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
         local timestamp, cevent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
         if cevent == "SPELL_CAST_START" then
             local unit = guidmap[sourceGUID]
-            if unit and UnitGUID(unit) == sourceGUID and UnitIsEnemy("player", unit) then
+            if unit and UnitGUID(unit) == sourceGUID and (UnitIsEnemy("player", unit) or OhSnapDB.TestMode) then
                 -- This is a unit we have an ID for at the moment so grab the target information
                 local destName = UnitName(unit .. "target")
                 local isUnit = destName and UnitName(destName)
@@ -304,10 +304,18 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 elseif arena and isUnit and (not UnitPlayerOrPetInParty(destName)) and (not UnitIsUnit(destName, "player")) then
                     -- They are casting on someone we don't care about
                     return
+				elseif not arena and isUnit then
+					local prio = 1
+					for k,v in pairs(OhSnap.spells[prio]) do
+						if v[notarget] then
+							destName = "Unknown"
+						end
+					end
                 elseif not arena and isUnit and not UnitIsUnit(destName, "player") then
                     -- Ignore anything that isn't targeting us
                     return
-                end
+				end
+				
                 local prio = 1
                 for k,v in pairs(OhSnap.spells[prio]) do
                     local spellname = GetSpellInfo(k)

@@ -4,18 +4,18 @@ OhSnap.spells = {}
 OhSnap.spells[4] = {
 	-- Paladin
 		-- Forbearance
-		[25771] = {msg = "Can't be Shielded"},
+		[25771] = {msg = "Can't use |TInterface\\Icons\\Spell_Holy_DivineIntervention:0|t"},
 	-- Mage
 		-- Hypothermia
-		[41425] = {msg = "Can't Ice Block"},
+		[41425] = {msg = "Can't use |TInterface\\Icons\\Spell_Frost_Frost:0|t"},
 	-- Priest
 		-- Weakened Soul
-		[6788] = {msg = "Can't be Shielded"},
+		[6788] = {msg = "Can't have |TInterface\\Icons\\Spell_Holy_PowerWordShield:0|t"},
 	-- Shaman
 		-- Exhaustion
-		[57723] = {msg = "Can't use Heroism"},
+		[57723] = {msg = "Can't have |TInterface\\Icons\\Ability_Shaman_Heroism:0|t"},
 		-- Sated
-		[57724] = {msg = "Can't use Bloodlust"},
+		[57724] = {msg = "Can't have |TInterface\\Icons\\Spell_Nature_BloodLust:0|t"},
 }
 -- Buffs tracked
 OhSnap.spells[3] = {
