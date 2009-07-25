@@ -325,7 +325,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                             local classcolor = RAID_CLASS_COLORS[class]
                             local r,g,b = classcolor.r, classcolor.g, classcolor.b
                             local msg
-							if v.notarget then
+							if v.notarget or destName == "Unknown" then
 								msg = string.format("%s: |T%s:0|t %s", srcName:match("[^-]+"), spellTexture, spellName)
 							else
 								msg = string.format("%s: |T%s:0|t %s -> %s", srcName:match("[^-]+"), spellTexture, spellName, destName)
@@ -346,11 +346,11 @@ end
 anchor.UNIT_SPELLCAST_START = anchor.INCOMING_SPELLCAST
 anchor.COMBAT_LOG_EVENT_UNFILTERED = anchor.INCOMING_SPELLCAST
 
---EventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
---EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
---EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
---EventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
---EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+EventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
 EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 EventFrame:SetScript("OnEvent", function(self, event, ...)
