@@ -24,10 +24,8 @@ OhSnap.spells[3] = {
 		[42650] = {msg = "Braiiiins!", class = "DEATHKNIGHT"},
 		-- Anti-Magic Shell
 		[48707] = {msg = "75% Magic Shield", class = "DEATHKNIGHT"},
-		-- Icebound Fortitude
-		[48792] = {msg = "20%+ Shield", class = "DEATHKNIGHT"},
 		-- Hysteria
-		[49016] = {msg = "20% Damage"},
+		[49016] = {msg = "+20% Damage"},
 		-- Lichborne
 		[49039] = {msg = "Fear Immune, Shackleable", class = "DEATHKNIGHT"},
 		-- Deathchill
@@ -35,37 +33,16 @@ OhSnap.spells[3] = {
 	-- Hunter
 		-- Deterrence
 		[19263] = {msg = "100% Parry, 100% Deflect", class = "HUNTER"},
-	-- Mage
-		-- Mana Shield
-		[43020] = {msg = "Absorbs damage", class = "MAGE"},
-		-- Ice Barrier
-		[43039] = {msg = "Absorbs damage", class = "MAGE"},
 	-- Paladin
-		-- Divine Protection
-		[498] = {msg = "50% Shield"},
 		-- Hand of Freedom
 		[1044] = {msg = "Snare Immune"},
-		-- Hand of Sacrifice
-		[6940] = {msg = "30% Shield"},
 		-- Aura Mastery
 		[31821] = {msg = "Silence Immune"},
 		-- Avenging Wrath
 		[31884] = {msg = "+20% Damage", class = "PALADIN"},
-		-- Divine Aegis
-		[47515] = {msg = "Absorbs damage"},
-		-- Sacred Shield
-		[53601] = {msg = "Absorbs damage"},
-		-- Divine Sacrifice
-		[64205] = {msg = "30% Shield"},
 	-- Priest
 		-- Fear Ward
 		[6346] = {msg = "Fear Immune"},
-		-- Pain Suppression
-		[33206] = {msg = "40% Shield"},
-		-- Dispersion
-		[47585] = {msg = "90% Shield", class = "PRIEST"},
-		-- Power Word: Shield
-		[48066] = {msg = "Absorbs damage"},
 	-- Rogue
 		-- Killing Spree
 		[13877] = {msg = "AoE, +20% Haste", class = "ROGUE"},
@@ -78,18 +55,10 @@ OhSnap.spells[3] = {
 	-- Shaman
 		-- Grounding Totem Effect
 		[8178] = {msg = "Grounding Totem", multi = true},
-		-- Shamanistic Rage
-		[30823] = {msg = "30% Shield", class = "SHAMAN"},
 	-- Warlock
-		-- Nether Protection
-		[30302] = {msg = "30% Magic Shield", class = "WARLOCK"},
 		-- Metamorphosis
 		[47241] = {msg = "+20% Damage, 600% Armor", class = "WARLOCK"},
-		-- Sacrifice
-		[47986] = {msg = "Absorbs damage", class = "WARLOCK"},
 	-- Warrior
-		-- Shield Wall
-		[871] = {msg = "60% Shield", class = "WARRIOR"},
 		-- Recklessness
 		[1719] = {msg = "100% Crit", class = "WARRIOR"},
 		-- Enrage
@@ -170,7 +139,7 @@ OhSnap.spells[1] = {
 		[53308] = {},
 	-- Hunter
 		-- Revive Pet
-		[982] = {},
+		[982] = {notarget = true},
 		-- Scare Beast
 		[14327] = {},
 	-- Mage
@@ -202,16 +171,16 @@ OhSnap.spells[1] = {
 		-- Hex
 		[51514] = {},
 		-- Feral Spirit
-		[51533] = {},
+		[51533] = {notarget = true},
 	-- Warlock
 		-- Summon Imp
-		[688] = {},
+		[688] = {notarget = true},
 		-- Summon Felhunter
-		[691] = {},
+		[691] = {notarget = true},
 		-- Summon Voidwalker
-		[697] = {},
+		[697] = {notarget = true},
 		-- Summon Succubus
-		[712] = {},
+		[712] = {notarget = true},
 		-- Drain Mana
 		[5138] = {},
 		-- Fear
@@ -221,7 +190,7 @@ OhSnap.spells[1] = {
 		-- Drain Life
 		[18647] = {},
 		-- Summon Felguard
-		[30146] = {},
+		[30146] = {notarget = true},
 		-- Howl of Terror
-		[47857] = {},
+		[47857] = {notarget = true},
 }

@@ -1,4 +1,5 @@
 ﻿local LibSimpleOptions = LibStub("LibSimpleOptions-1.0")
+
 local anchor
 local function Options(self, anchor)
     local title, subText = self:MakeTitleTextAndSubText("OhSnap", "OhSnap Configuration")

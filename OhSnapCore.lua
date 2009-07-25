@@ -1,4 +1,4 @@
-local messages = {}
+Mmessages = {}
 local targetMsgs = {}
 local rows = {}
 local guidmap = {}
@@ -51,7 +51,7 @@ function OhSnap:Initialize()
 end
 
 -- Adds a message to the alert frame, returns a uid
-function OhSnap:AddMessage(msg, priority, r, g, b, a, duration, lenght)
+function OhSnap:AddMessage(msg, priority, r, g, b, a, duration, left)
     local entry = {
         msg = msg or "Empty message", 
         pri = priority or 1,
@@ -61,19 +61,31 @@ function OhSnap:AddMessage(msg, priority, r, g, b, a, duration, lenght)
         b = b or 1,
         a = a or 1,
         dura = duration or 0,
-        len = lenght or 0,
+        left = left or 0,
     }
     uidcount = uidcount + 1
-    table.insert(messages, entry)
+    table.insert(Mmessages, entry)
     self:Update()
     return entry
 end
 
+-- Edits a message if it already exists and is being displayed in alert frame
+function OhSnap:EditMessage(uid,duration,left)
+    for i=1,#Mmessages do
+        if Mmessages[i] == uid then
+			Mmessages[i].dura = duration
+			Mmessages[i].left = left
+            self:Update()
+            return
+        end
+    end
+end
+
 -- Removes a message from the alert frame
 function OhSnap:DelMessage(uid)
-    for i=1,#messages do
-        if messages[i] == uid then
-            table.remove(messages, i)
+    for i=1,#Mmessages do
+        if Mmessages[i] == uid then
+            table.remove(Mmessages, i)
             self:Update()
             return
         end
@@ -81,7 +93,7 @@ function OhSnap:DelMessage(uid)
 end
 
 function OhSnap:Clear()
-    table.wipe(messages)
+    table.wipe(Mmessages)
     table.wipe(done)
     table.wipe(targetMsgs)
     EventFrame:SetScript("OnUpdate",nil)
@@ -99,7 +111,7 @@ end
 -- Updates the frame to display
 function OhSnap:Update()
     -- Create enough frames, if necessary
-    for i=#rows + 1, #messages, 1 do
+    for i=#rows + 1, #Mmessages, 1 do
         local row = CreateFrame("Frame")
         row:SetFrameStrata("HIGH")
         row.text = row:CreateFontString(nil, "OVERLAY")
@@ -108,9 +120,9 @@ function OhSnap:Update()
         rows[i] = row
     end
     -- Sort the frames
-    table.sort(messages, sortFunc)
+    table.sort(Mmessages, sortFunc)
     -- Anchor the frames in order
-    for idx,entry in ipairs(messages) do
+    for idx,entry in ipairs(Mmessages) do
         local row = rows[idx]
         if idx == 1 then
             row:ClearAllPoints()
@@ -126,8 +138,8 @@ function OhSnap:Update()
         local message
         -- Coloring the time
         local r,g,b = 0,1,0
-        local lenght = entry.len
-        local percent = duration / lenght
+        local left = entry.left
+        local percent = duration / left
         if ( percent > 0.5 ) then r,g,b = 2 * (1 - percent), 1, 0
         else r,g,b = 1, 2 * percent, 0 end
         local color = string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
@@ -141,7 +153,7 @@ function OhSnap:Update()
         row:Show()
     end
     -- Hide any extra frames
-    for i=#rows, #messages + 1, -1 do
+    for i=#rows, #Mmessages + 1, -1 do
         rows[i]:Hide()
     end   
 end
@@ -172,14 +184,13 @@ local function unitscan(unit)
             if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
                 if not done[guid][spellname] then
                     local message = UnitName(unit):match("[^-]+").. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
-                    local duration = select(7,UnitDebuff(unit,spellname))
-                    local lenght = select(6,UnitDebuff(unit,spellname))
-                    local uid = OhSnap:AddMessage(message,prio,0,1,0,1,duration,lenght)
+                    local uid = OhSnap:AddMessage(message,prio,0,1,0,1,select(7,UnitDebuff(unit,spellname)),select(6,UnitDebuff(unit,spellname)))
                     done[guid][spellname] = uid
                     if UnitIsUnit(unit, "target") then
                         table.insert(targetMsgs, uid)
                     end
-                end
+				end
+
             elseif done[guid][spellname] then
                 local uid = done[guid][spellname]
                 OhSnap:DelMessage(uid)
@@ -197,18 +208,19 @@ local function unitscan(unit)
             if (v.class and (targetclass == v.class or targetclass == "MAGE")) or not v.class then
                 -- If the spell is on the given unit, and its not already done
                 if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitAura(unit, spellname) then
-                    if not done[guid][spellname] then
-                        local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
-                        local r,g,b = classcolor.r,classcolor.g,classcolor.b
-                        local message = (v["multi"] and "" or UnitName(unit):match("[^-]+")..": ").. "|T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
-                        local duration = select(7,UnitAura(unit,spellname))
-                        local lenght = select(6,UnitAura(unit,spellname))
-                        local uid = OhSnap:AddMessage(message,prio,r,g,b,1,duration,lenght)
-                        done[guid][spellname] = uid
-                        if UnitIsUnit(unit, "target") then
-                            table.insert(targetMsgs, uid)
-                        end
-                    end
+					if not done[guid][spellname] then
+						local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
+						local r,g,b = classcolor.r,classcolor.g,classcolor.b
+						local message = (v["multi"] and "" or UnitName(unit):match("[^-]+")..": ").. "|T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
+						local uid = OhSnap:AddMessage(message,prio,r,g,b,1,select(7,UnitAura(unit,spellname)),select(6,UnitAura(unit,spellname)))
+						done[guid][spellname] = uid
+						if UnitIsUnit(unit, "target") then
+							table.insert(targetMsgs, uid)
+						end
+					else
+						local uid = done[guid][spellname]
+						OhSnap:EditMessage(uid,select(7,UnitAura(unit,spellname)),select(6,UnitAura(unit,spellname)))
+					end
                 elseif done[guid][spellname] then
                     local uid = done[guid][spellname]
                     OhSnap:DelMessage(uid)
@@ -253,7 +265,6 @@ end
 function anchor:PLAYER_ENTERING_WORLD()
     if not OhSnapAnchor:IsVisible() then OhSnap:Clear() end
 	OhSnap:ToggleAnchor(OhSnapDB["ShowAnchor"])
-	--OhSnap:RestorePosition()
 end
 
 function anchor:PLAYER_ALIVE()
@@ -305,7 +316,12 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                             local class = select(2, UnitClass(unit)) or "PRIEST"
                             local classcolor = RAID_CLASS_COLORS[class]
                             local r,g,b = classcolor.r, classcolor.g, classcolor.b
-                            local msg = string.format("%s: |T%s:0|t %s -> %s", srcName:match("[^-]+"), spellTexture, spellName, destName)
+                            local msg
+							if v.notarget then
+								msg = string.format("%s: |T%s:0|t %s", srcName:match("[^-]+"), spellTexture, spellName)
+							else
+								msg = string.format("%s: |T%s:0|t %s -> %s", srcName:match("[^-]+"), spellTexture, spellName, destName)
+							end
                             local uid = OhSnap:AddMessage(msg, prio, r, g, b)
                             done[guid][spellName] = uid
                             if targetMsg then 
@@ -426,10 +442,13 @@ SlashCmdList["OhSnap"] = function(name)
 		OhSnap:ToggleAnchor(true)
 	elseif name == "gui" then
 		InterfaceOptionsFrame_OpenToCategory(OhSnap_Panel)
+	elseif name == "clear" then
+		OhSnap:Clear()
 	elseif not name or name == "" then
 		ChatFrame1:AddMessage("OhSnap slashcommand:")
-		ChatFrame1:AddMessage(" /ohsnap show - will show the anchor")
-		ChatFrame1:AddMessage(" /ohsnap hide - will hide the anchor")
-		ChatFrame1:AddMessage(" /ohsnap gui - will open the GUI")
+		ChatFrame1:AddMessage(" /ohsnap show - show the anchor")
+		ChatFrame1:AddMessage(" /ohsnap hide - hide the anchor")
+		ChatFrame1:AddMessage(" /ohsnap gui - open the GUI")
+		ChatFrame1:AddMessage(" /ohsnap clear - clears the messages from anchor")
 	end
 end
