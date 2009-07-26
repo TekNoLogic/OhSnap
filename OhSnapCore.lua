@@ -134,17 +134,17 @@ function OhSnap:Update()
         row:SetHeight(20)
         row:SetWidth(250)
 		row.text:SetFont(unpack(OhSnapDB[entry.pri]))
-        local duration = floor(entry.dura-GetTime())
+        local duration = entry.dura --floor(entry.dura-GetTime())
         local message
         -- Coloring the time
         local r,g,b = 0,1,0
-        local left = entry.left
-        local percent = duration / left
+        local left = floor(entry.left-GetTime())
+        local percent = left / duration
         if ( percent > 0.5 ) then r,g,b = 2 * (1 - percent), 1, 0
         else r,g,b = 1, 2 * percent, 0 end
         local color = string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
         if left >= 0 then
-            message = entry.msg.." ("..color..duration.."|rs)"
+            message = entry.msg.." ("..color..left.."|rs)"
         else
             message = entry.msg
         end
@@ -184,7 +184,7 @@ local function unitscan(unit)
             if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
                 if not done[guid][spellname] then
                     local message = UnitName(unit):match("[^-]+").. ": |T"..select(3,UnitDebuff(unit, spellname))..":0|t "..v.msg
-                    local uid = OhSnap:AddMessage(message,prio,0,1,0,1,select(7,UnitDebuff(unit,spellname)),select(6,UnitDebuff(unit,spellname)))
+                    local uid = OhSnap:AddMessage(message,prio,0,1,0,1,select(6,UnitDebuff(unit,spellname)),select(7,UnitDebuff(unit,spellname)))
                     done[guid][spellname] = uid
                     if UnitIsUnit(unit, "target") then
                         table.insert(targetMsgs, uid)
@@ -211,7 +211,7 @@ local function unitscan(unit)
 						local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 						local r,g,b = classcolor.r,classcolor.g,classcolor.b
 						local message = (v["multi"] and "" or UnitName(unit):match("[^-]+")..": ").. "|T"..select(3,UnitAura(unit, spellname))..":0|t "..v.msg
-						local uid = OhSnap:AddMessage(message,prio,r,g,b,1,select(7,UnitAura(unit,spellname)),select(6,UnitAura(unit,spellname)))
+						local uid = OhSnap:AddMessage(message,prio,r,g,b,1,select(6,UnitAura(unit,spellname)),select(7,UnitAura(unit,spellname)))
 						done[guid][spellname] = uid
 						if UnitIsUnit(unit, "target") then
 							table.insert(targetMsgs, uid)
@@ -219,7 +219,7 @@ local function unitscan(unit)
 					else
 						-- Message exists but time might have changed
 						local uid = done[guid][spellname]
-						OhSnap:EditMessage(uid,select(7,UnitAura(unit,spellname)),select(6,UnitAura(unit,spellname)))
+						OhSnap:EditMessage(uid,select(6,UnitAura(unit,spellname)),select(7,UnitAura(unit,spellname)))
 					end
                 elseif done[guid][spellname] then
                     local uid = done[guid][spellname]

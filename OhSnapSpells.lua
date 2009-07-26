@@ -23,7 +23,7 @@ OhSnap.spells[3] = {
 		-- Army of the Dead
 		[42650] = {msg = "Braiiiins!", class = "DEATHKNIGHT"},
 		-- Anti-Magic Shell
-		[48707] = {msg = "75% Magic Shield", class = "DEATHKNIGHT"},
+		[48707] = {msg = "DoT Immune", class = "DEATHKNIGHT"},
 		-- Lichborne
 		[49039] = {msg = "Fear Immune, Shackleable", class = "DEATHKNIGHT"},
 		-- Deathchill
