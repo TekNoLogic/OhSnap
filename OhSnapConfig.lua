@@ -1,4 +1,4 @@
-﻿local LibSimpleOptions = LibStub("LibSimpleOptions-1.0")
+local LibSimpleOptions = LibStub("LibSimpleOptions-1.0")
 
 local anchor
 local function Options(self, anchor)
@@ -23,7 +23,7 @@ local function Options(self, anchor)
 	test:SetPoint("LEFT", lock, "RIGHT", 250, 0)
 
 	local f = CreateFrame("Frame")
-    for i=1,4 do
+	    for i=1,4 do
 		local slider = self:MakeSlider(
 			'name', "Size",
 			'description', "Size of font",
@@ -68,7 +68,7 @@ local function Options(self, anchor)
 			'name', "Outline",
 			'description', "Font Outline",
 			'values', {
-				'OUTLINE, THICKOUTLINE', "Thick",
+				'THICKOUTLINE', "Thick",
 				'OUTLINE', "Thin",
 				'', "None",
 			 },
@@ -80,8 +80,7 @@ local function Options(self, anchor)
 				if value == 'THICKOUTLINE' or value == 'OUTLINE' or value == '' then OhSnapDB[i][3] = value; OhSnap:Update() end
 		end)
 		dropdown:SetPoint("LEFT", anchor, "RIGHT", 110, -10)	
-
-    end
+	end
 end
 
 LibSimpleOptions.AddOptionsPanel("OhSnap", function(self) Options(self, anchor) end)
