@@ -4,18 +4,18 @@ OhSnap.spells = {}
 OhSnap.spells[4] = {
 	-- Paladin
 		-- Forbearance
-		[25771] = {msg = "Can't use |TInterface\\Icons\\Spell_Holy_DivineIntervention:0|t"},
+		[25771] = {msg = "Can't |TInterface\\Icons\\Spell_Holy_DivineIntervention:0|t"},
 	-- Mage
 		-- Hypothermia
-		[41425] = {msg = "Can't use |TInterface\\Icons\\Spell_Frost_Frost:0|t"},
+		[41425] = {msg = "Can't |TInterface\\Icons\\Spell_Frost_Frost:0|t"},
 	-- Priest
 		-- Weakened Soul
-		[6788] = {msg = "Can't have |TInterface\\Icons\\Spell_Holy_PowerWordShield:0|t"},
+		[6788] = {msg = "Can't |TInterface\\Icons\\Spell_Holy_PowerWordShield:0|t"},
 	-- Shaman
 		-- Exhaustion
-		[57723] = {msg = "Can't have |TInterface\\Icons\\Ability_Shaman_Heroism:0|t"},
+		[57723] = {msg = "Can't |TInterface\\Icons\\Ability_Shaman_Heroism:0|t"},
 		-- Sated
-		[57724] = {msg = "Can't have |TInterface\\Icons\\Spell_Nature_BloodLust:0|t"},
+		[57724] = {msg = "Can't |TInterface\\Icons\\Spell_Nature_BloodLust:0|t"},
 }
 -- Buffs tracked
 OhSnap.spells[3] = {
@@ -24,8 +24,6 @@ OhSnap.spells[3] = {
 		[42650] = {msg = "Braiiiins!", class = "DEATHKNIGHT"},
 		-- Anti-Magic Shell
 		[48707] = {msg = "75% Magic Shield", class = "DEATHKNIGHT"},
-		-- Hysteria
-		[49016] = {msg = "+20% Damage"},
 		-- Lichborne
 		[49039] = {msg = "Fear Immune, Shackleable", class = "DEATHKNIGHT"},
 		-- Deathchill
@@ -38,31 +36,22 @@ OhSnap.spells[3] = {
 		[1044] = {msg = "Snare Immune"},
 		-- Aura Mastery
 		[31821] = {msg = "Silence Immune"},
-		-- Avenging Wrath
-		[31884] = {msg = "+20% Damage", class = "PALADIN"},
 	-- Priest
 		-- Fear Ward
 		[6346] = {msg = "Fear Immune"},
 	-- Rogue
 		-- Killing Spree
 		[13877] = {msg = "AoE, +20% Haste", class = "ROGUE"},
-		-- Blade Flurry
+		-- Cold Blood
 		[14177] = {msg = "100% Crit", class = "ROGUE"},
 		-- Evasion
 		[26669] = {msg = "+50% Dodge, -25% Ranged", class = "ROGUE"},
-		-- Cold Blood
-		[51690] = {msg = "+20% Damage", class = "ROGUE"},
 	-- Shaman
 		-- Grounding Totem Effect
 		[8178] = {msg = "Grounding Totem", multi = true},
-	-- Warlock
-		-- Metamorphosis
-		[47241] = {msg = "+20% Damage, 600% Armor", class = "WARLOCK"},
 	-- Warrior
 		-- Recklessness
 		[1719] = {msg = "100% Crit", class = "WARRIOR"},
-		-- Enrage
-		[13048] = {msg = "+10% Damage", class = "WARRIOR"},
 		-- Berserker Rage
 		[18499] = {msg = "CC Immune", class = "WARRIOR"},
 
