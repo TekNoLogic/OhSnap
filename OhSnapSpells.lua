@@ -169,6 +169,8 @@ OhSnap.spells[1] = {
 		[8129] = {},
 		-- Resurrection
 		[48171] = {},
+		-- Shackle Undead
+		[10955] = {},
 	-- Shaman
 		-- Hex
 		[51514] = {},

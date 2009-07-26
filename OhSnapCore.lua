@@ -143,7 +143,7 @@ function OhSnap:Update()
         if ( percent > 0.5 ) then r,g,b = 2 * (1 - percent), 1, 0
         else r,g,b = 1, 2 * percent, 0 end
         local color = string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
-        if duration >= 0 then
+        if left >= 0 then
             message = entry.msg.." ("..color..duration.."|rs)"
         else
             message = entry.msg
@@ -190,7 +190,6 @@ local function unitscan(unit)
                         table.insert(targetMsgs, uid)
                     end
 				end
-
             elseif done[guid][spellname] then
                 local uid = done[guid][spellname]
                 OhSnap:DelMessage(uid)
@@ -218,6 +217,7 @@ local function unitscan(unit)
 							table.insert(targetMsgs, uid)
 						end
 					else
+						-- Message exists but time might have changed
 						local uid = done[guid][spellname]
 						OhSnap:EditMessage(uid,select(7,UnitAura(unit,spellname)),select(6,UnitAura(unit,spellname)))
 					end
@@ -290,7 +290,7 @@ function anchor:INCOMING_SPELLCAST(event, ...)
         local timestamp, cevent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
         if cevent == "SPELL_CAST_START" then
             local unit = guidmap[sourceGUID]
-            if unit and UnitGUID(unit) == sourceGUID and (UnitIsEnemy("player", unit) or OhSnapDB.TestMode) then
+            if unit and UnitGUID(unit) == sourceGUID and UnitIsEnemy("player", unit) then
                 -- This is a unit we have an ID for at the moment so grab the target information
                 local destName = UnitName(unit .. "target")
                 local isUnit = destName and UnitName(destName)
@@ -304,18 +304,10 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                 elseif arena and isUnit and (not UnitPlayerOrPetInParty(destName)) and (not UnitIsUnit(destName, "player")) then
                     -- They are casting on someone we don't care about
                     return
-				elseif not arena and isUnit then
-					local prio = 1
-					for k,v in pairs(OhSnap.spells[prio]) do
-						if v[notarget] then
-							destName = "Unknown"
-						end
-					end
                 elseif not arena and isUnit and not UnitIsUnit(destName, "player") then
                     -- Ignore anything that isn't targeting us
                     return
 				end
-				
                 local prio = 1
                 for k,v in pairs(OhSnap.spells[prio]) do
                     local spellname = GetSpellInfo(k)
