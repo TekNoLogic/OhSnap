@@ -136,19 +136,11 @@ function OhSnap:Update()
         row.text:SetFont(unpack(OhSnapDB[entry.pri]))
         local duration = entry.dura
         -- Coloring the time
---        local r,g,b = 0,1,0
         local left = floor(entry.left-GetTime())
         local percent = left / duration
         local r,g,b = percent > 0.5 and 2 * (1 - percent) or 1, percent > 0.5 and 1 or 2 * percent, 0 
---        if ( percent > 0.5 ) then r,g,b = 2 * (1 - percent), 1, 0 
---        else r,g,b = 1, 2 * percent, 0 end
         local color = string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
         local message = (left and left >= 0) and entry.msg.." ("..color..left.."|rs)" or entry.msg
---        if left >= 0 then
---            message = entry.msg.." ("..color..left.."|rs)"
---        else
---            message = entry.msg
---        end
         row.text:SetText(message)
         row.text:SetTextColor(entry.r, entry.g, entry.b, entry.a)
         row:Show()
@@ -319,11 +311,6 @@ function anchor:INCOMING_SPELLCAST(event, ...)
                             local r,g,b = classcolor.r, classcolor.g, classcolor.b
                             local message = (v.notarget or destName == "Unknown") and "%s: |T%s:0|t %s" or "%s: |T%s:0|t %s -> %s"
                             local msg = string.format(message, srcName, spellTexture, spellName, destName)
---                            if v.notarget or destName == "Unknown" then
---                                msg = string.format("%s: |T%s:0|t %s", srcName, spellTexture, spellName)
---                            else
---                                msg = string.format("%s: |T%s:0|t %s -> %s", srcName, spellTexture, spellName, destName)
---                            end
                             local uid = OhSnap:AddMessage(msg, prio, r, g, b)
                             done[guid][spellName] = uid
                             if targetMsg then 

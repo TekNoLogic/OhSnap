@@ -31,6 +31,9 @@ OhSnap.spells[3] = {
 	-- Hunter
 		-- Deterrence
 		[19263] = {msg = "100% Parry, 100% Deflect", class = "HUNTER"},
+	-- Mage
+		-- Evocation
+		[12051] = {msg = "Gaining mana", class = "MAGE"},
 	-- Paladin
 		-- Hand of Freedom
 		[1044] = {msg = "Snare Immune"},
@@ -132,8 +135,6 @@ OhSnap.spells[1] = {
 		-- Scare Beast
 		[14327] = {},
 	-- Mage
-		-- Evocation
-		[12051] = {notarget = true},
 		-- Polymorph
 		[12825] = {},
 		-- Polymorph: Turtle
