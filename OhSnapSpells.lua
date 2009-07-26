@@ -4,18 +4,21 @@ OhSnap.spells = {}
 OhSnap.spells[4] = {
 	-- Paladin
 		-- Forbearance
-		[25771] = {msg = "Can't |TInterface\\Icons\\Spell_Holy_DivineIntervention:0|t"},
+		[25771] = {msg = "Can't use Divine Shield"},
 	-- Mage
 		-- Hypothermia
-		[41425] = {msg = "Can't |TInterface\\Icons\\Spell_Frost_Frost:0|t"},
+		[41425] = {msg = "Can't use Ice Block"},
 	-- Priest
 		-- Weakened Soul
-		[6788] = {msg = "Can't |TInterface\\Icons\\Spell_Holy_PowerWordShield:0|t"},
+		[6788] = {msg = "Can't have Power Word: Shield"},
 	-- Shaman
 		-- Exhaustion
-		[57723] = {msg = "Can't |TInterface\\Icons\\Ability_Shaman_Heroism:0|t"},
+		[57723] = {msg = "Can't use Heroism", multi = true},
 		-- Sated
-		[57724] = {msg = "Can't |TInterface\\Icons\\Spell_Nature_BloodLust:0|t"},
+		[57724] = {msg = "Can't use Bloodlust", multi = true},
+	-- Misc
+		-- Sap
+		[51724] = {msg = "Sapped"},
 }
 -- Buffs tracked
 OhSnap.spells[3] = {
@@ -106,7 +109,7 @@ OhSnap.spells[2] = {
 		-- Spell Reflection
 		[23920] = {msg = "|cFFFF0000No spells!|r", class = "WARRIOR"},
 		-- Bladestorm
-		[46924] = {msg = "AoE, Unstoppable", class = "WARRIOR"},
+		[46924] = {msg = "Move Away", class = "WARRIOR"},
 		
 	-- Misc
 		-- Drink

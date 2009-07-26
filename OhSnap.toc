@@ -2,6 +2,7 @@
 ## Title: OhSnap!
 ## Notes: Monitor for PvP skills and spells that you should be aware of
 ## Author: Cladhaire, Mikma
+## Version: alpha
 ## SavedVariables: OhSnapDB
 
 LibStub.lua
