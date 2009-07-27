@@ -173,6 +173,7 @@ local function unitscan(unit)
 		for k,v in pairs(OhSnap.spells[prio]) do
 			local spellname = GetSpellInfo(k)
 			local targetclass = select(2,UnitClass(unit))
+			if v["multi"] then guid = "MULTI" end
 			if (v.class and targetclass == v.class) or not v.class then
 				-- If the spell is on the given unit, and its not already done
 				if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
