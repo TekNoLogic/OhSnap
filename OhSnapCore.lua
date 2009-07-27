@@ -4,10 +4,10 @@ local rows = {}
 local guidmap = {}
 local uidcount = 0
 OhSnap.Defaults = {
-    [1] = {"Fonts\\FRIZQT__.TTF", 24, "THICKOUTLINE",true,true,true,true},
-    [2] = {"Fonts\\FRIZQT__.TTF", 18, "OUTLINE",true,true,true,true},
-    [3] = {"Fonts\\FRIZQT__.TTF", 14, "OUTLINE",true,true,true,true},
-    [4] = {"Fonts\\FRIZQT__.TTF", 11, "OUTLINE",true,true,true,true},
+    [1] = {"Fonts\\FRIZQT__.TTF", 24, "THICKOUTLINE",true,true,true,true,true},
+    [2] = {"Fonts\\FRIZQT__.TTF", 18, "OUTLINE",true,true,true,true,true},
+    [3] = {"Fonts\\FRIZQT__.TTF", 14, "OUTLINE",true,true,true,true,true},
+    [4] = {"Fonts\\FRIZQT__.TTF", 11, "OUTLINE",true,true,true,true,true},
     ["ShowAnchor"] = true,	
     ["TestMode"] = false,
 }
@@ -47,7 +47,6 @@ function OhSnap:Initialize()
         self:StopMovingOrSizing()
         OhSnap:SavePosition()
     end)
-
 end
 
 -- Adds a message to the alert frame, returns a uid
@@ -177,10 +176,11 @@ local function unitscan(unit)
 				-- If the spell is on the given unit, and its not already done
 				if ((UnitIsPlayer(unit) and not UnitIsFriend("player", unit)) or OhSnapDB.TestMode) and UnitDebuff(unit, spellname) then
 					if not done[guid][spellname] then
-						local name = (v["multi"] and "") or (OhSnapDB[prio][5] and UnitName(unit):match("[^-]+")..": " or "")
-						local spellicon = OhSnapDB[prio][6] and " |T"..select(3,UnitDebuff(unit, spellname))..":0|t " or ""
-						local description = OhSnapDB[prio][7] and v.msg or ""
-						local message = name..spellicon..description
+						local OhName = (v["multi"] and "") or (OhSnapDB[prio][5] and UnitName(unit):match("[^-]+")..": " or "")
+						local OhSpellicon = OhSnapDB[prio][6] and " |T"..select(3,UnitDebuff(unit, spellname))..":0|t " or ""
+						local OhSpellname = OhSnapDB[prio][7] and spellname.." "  or ""
+						local OhDescription = OhSnapDB[prio][8] and v.msg or ""
+						local message = OhName..OhSpellicon..OhSpellname..OhDescription
 						local uid = OhSnap:AddMessage(message,prio,0,1,0,1,select(6,UnitDebuff(unit,spellname)),select(7,UnitDebuff(unit,spellname)))
 						done[guid][spellname] = uid
 						if UnitIsUnit(unit, "target") then
@@ -209,10 +209,11 @@ local function unitscan(unit)
 						if not done[guid][spellname] then
 							local classcolor = RAID_CLASS_COLORS[select(2,UnitClass(unit))]
 							local r,g,b = classcolor.r,classcolor.g,classcolor.b
-							local name = (v["multi"] and "") or (OhSnapDB[prio][5] and UnitName(unit):match("[^-]+")..": " or "")
-							local spellicon = OhSnapDB[prio][6] and "|T"..select(3,UnitAura(unit, spellname))..":0|t " or ""
-							local description = OhSnapDB[prio][7] and v.msg or ""
-							local message = name..spellicon..description
+							local OhName = (v["multi"] and "") or (OhSnapDB[prio][5] and UnitName(unit):match("[^-]+")..": " or "")
+							local OhSpellicon = OhSnapDB[prio][6] and "|T"..select(3,UnitAura(unit, spellname))..":0|t " or ""
+							local OhSpellname = OhSnapDB[prio][7] and spellname.." " or ""
+							local OhDescription = OhSnapDB[prio][8] and v.msg or ""
+							local message = OhName..OhSpellicon..OhSpellname..OhDescription
 							local uid = OhSnap:AddMessage(message,prio,r,g,b,1,select(6,UnitAura(unit,spellname)),select(7,UnitAura(unit,spellname)))
 							done[guid][spellname] = uid
 							if UnitIsUnit(unit, "target") then
@@ -325,11 +326,12 @@ function anchor:INCOMING_SPELLCAST(event, ...)
 								--local spellicon = OhSnapDB[prio][6] and "|T"..select(3,UnitAura(unit, spellname))..":0|t " or ""
 								--local description = OhSnapDB[prio][7] and v.msg or ""
 								
-								local name = OhSnapDB[prio][5] and srcName..": " or ""
-								local spellicon = OhSnapDB[prio][6] and "|T"..spellTexture..":0|t " or ""
-								local description = OhSnapDB[prio][7] and spellName.." " or ""
-								local targetname = (v.notarget or destname == "Unknown") and "" or "-> "..destName
-								local msg = name..spellicon..description..targetname
+								local OhName = OhSnapDB[prio][5] and srcName..": " or ""
+								local OhSpellicon = OhSnapDB[prio][6] and "|T"..spellTexture..":0|t " or ""
+								local OhSpellname = OhSnapDB[prio][7] and spellName.." " or ""
+								local OhDescription = (OhSnapDB[prio][8] and not v.notarget) and "-> "..destName or ""
+								--(v.notarget or destName == "Unknown") and "" or "-> "..destName
+								local msg = OhName..OhSpellicon..OhSpellname..OhDescription
 
 								--local message = (v.notarget or destName == "Unknown") and "%s: |T%s:0|t %s" or "%s: |T%s:0|t %s -> %s"
 								--local msg = string.format(message, srcName, spellTexture, spellName, destName)

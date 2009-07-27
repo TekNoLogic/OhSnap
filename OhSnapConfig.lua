@@ -87,8 +87,8 @@ local function FontOptions(self,anchor,i)
 	dropdown:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -220)	
 	
 	local lock = self:MakeToggle(
-		'name', 'Name',
-		'description', 'Enable name',
+		'name', 'Caster',
+		'description', 'Enable caster name',
 		'default', true,
 		'getFunc', function() value = OhSnapDB[i][5] return OhSnapDB[i][5] end,
 		'setFunc', function(value) OhSnapDB[i][5] = value; OhSnap:Update() end
@@ -105,14 +105,23 @@ local function FontOptions(self,anchor,i)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -300)
 
 	local lock = self:MakeToggle(
-		'name', 'Comment',
-		'description', 'Enable spell comment',
-		'default', true,
+		'name', 'Spell',
+		'description', 'Enable spell name',
+		'default', false,
 		'getFunc', function() value = OhSnapDB[i][7] return OhSnapDB[i][7] end,
 		'setFunc', function(value) OhSnapDB[i][7] = value; OhSnap:Update() end
 	)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -330)
-	
+
+	local lock = self:MakeToggle(
+		'name', 'Comment / Target',
+		'description', 'Enable spell comment / target',
+		'default', true,
+		'getFunc', function() value = OhSnapDB[i][8] return OhSnapDB[i][8] end,
+		'setFunc', function(value) OhSnapDB[i][8] = value; OhSnap:Update() end
+	)
+	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -360)
+
 end
 
 LibSimpleOptions.AddOptionsPanel("OhSnap", function(self) Options(self, anchor) end)
