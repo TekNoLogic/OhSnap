@@ -4,10 +4,10 @@ local rows = {}
 local guidmap = {}
 local uidcount = 0
 OhSnap.Defaults = {
-    [1] = {"Fonts\\FRIZQT__.TTF", 24, "THICKOUTLINE",true,true,true,true,true},
-    [2] = {"Fonts\\FRIZQT__.TTF", 18, "OUTLINE",true,true,true,true,true},
-    [3] = {"Fonts\\FRIZQT__.TTF", 14, "OUTLINE",true,true,true,true,true},
-    [4] = {"Fonts\\FRIZQT__.TTF", 11, "OUTLINE",true,true,true,true,true},
+    [1] = {"Fonts\\FRIZQT__.TTF",24,"THICKOUTLINE",true,true,true,false,true},
+    [2] = {"Fonts\\FRIZQT__.TTF",18,"OUTLINE",true,true,true,false,true},
+    [3] = {"Fonts\\FRIZQT__.TTF",14,"OUTLINE",true,true,true,false,true},
+    [4] = {"Fonts\\FRIZQT__.TTF",11,"OUTLINE",true,true,true,false,true},
     ["ShowAnchor"] = true,	
     ["TestMode"] = false,
 }

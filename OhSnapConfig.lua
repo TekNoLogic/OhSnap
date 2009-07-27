@@ -1,22 +1,19 @@
 local LibSimpleOptions = LibStub("LibSimpleOptions-1.0")
 
-local anchor
 local function Options(self, anchor)
     local title, subText = self:MakeTitleTextAndSubText("OhSnap", "OhSnap Configuration")
-   
-	local checkbox = self:MakeToggle(
+   	local checkbox = self:MakeToggle(
 		'name', 'Show anchor',
 		'description', 'Visibility of text anchor',
-		'default', true,
+		'default', OhSnap.Defaults["ShowAnchor"],
 		'getFunc', function() return OhSnapDB["ShowAnchor"] end,
 		'setFunc', function(value) OhSnap:ToggleAnchor(value) end
 	)
 	checkbox:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -70)
-
 	local button = self:MakeToggle(
 		'name', 'Test mode',
-		'description', 'Show messages on friendly targets (ie. Target Dummies)',
-		'default', false,
+		'description', 'Show messages from friendly targets (ie. Target Dummies)',
+		'default', OhSnap.Defaults["TestMode"],
 		'getFunc', function() return OhSnapDB["TestMode"] end,
 		'setFunc', function(value) OhSnapDB["TestMode"] = value; OhSnap:Update() end
 	)
@@ -25,13 +22,11 @@ end
 
 local function FontOptions(self,anchor,i)
 	local title, subText = self:MakeTitleTextAndSubText("OhSnap", "Priority "..i.." Options")
-	local f = CreateFrame("Frame")
-	
 	local lock = self:MakeToggle(
 		'name', 'Enabled',
-		'description', 'Enable Priority 1',
-		'default', true,
-		'getFunc', function() value = OhSnapDB[i][4] return OhSnapDB[i][4] end,
+		'description', 'Enable Priority '..i,
+		'default', OhSnap.Defaults[i][4],
+		'getFunc', function() return OhSnapDB[i][4] end,
 		'setFunc', function(value) OhSnapDB[i][4] = value; OhSnap:Update() end
 	)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -70)
@@ -45,7 +40,7 @@ local function FontOptions(self,anchor,i)
 		'maxValue', 24,
 		'step', 1,
 		'default', OhSnap.Defaults[i][2],
-		'getFunc', function(value) value = OhSnapDB[i][2] return OhSnapDB[i][2] end,    
+		'getFunc', function() return OhSnapDB[i][2] end,    
 		'setFunc', function(value) OhSnapDB[i][2] = value; OhSnap:Update() end,
 		'currentTextFunc', function(value) return value
 	end)
@@ -53,7 +48,7 @@ local function FontOptions(self,anchor,i)
 
 	local dropdown = self:MakeDropDown(
 		'name', "Font",
-		'description', "Select font to be used",
+		'description', "Select font to use",
 		'values', {
 			'Fonts\\FRIZQT__.TTF', "Frizqt",
 			'Fonts\\ARIALN.TTF', "Arialn",
@@ -61,9 +56,7 @@ local function FontOptions(self,anchor,i)
 			'Fonts\\MORPHEUS.ttf', "Morpheus",
 		 },
 		'default', OhSnapDB[i][1],
-		'getFunc', function() 
-			return OhSnapDB[i][1] 
-		end,
+		'getFunc', function() return OhSnapDB[i][1] end,
 		'setFunc', function(value)
 			if value == 'Fonts\\FRIZQT__.TTF' or value == 'Fonts\\ARIALN.TTF' or value == 'Fonts\\skurri.ttf' or value == 'Fonts\\MORPHEUS.ttf' then OhSnapDB[i][1] = value; OhSnap:Update() end
 	end)
@@ -71,16 +64,14 @@ local function FontOptions(self,anchor,i)
 
 	local dropdown = self:MakeDropDown(
 		'name', "Outline",
-		'description', "Font Outline",
+		'description', "Select Outline thickness",
 		'values', {
 			'THICKOUTLINE', "Thick",
 			'OUTLINE', "Thin",
 			'', "None",
 		 },
 		'default', OhSnapDB[i][3],
-		'getFunc', function() 
-			return OhSnapDB[i][3] 
-		end,
+		'getFunc', function() return OhSnapDB[i][3] end,
 		'setFunc', function(value)
 			if value == 'THICKOUTLINE' or value == 'OUTLINE' or value == '' then OhSnapDB[i][3] = value; OhSnap:Update() end
 	end)
@@ -88,40 +79,50 @@ local function FontOptions(self,anchor,i)
 	
 	local lock = self:MakeToggle(
 		'name', 'Caster',
-		'description', 'Enable caster name',
-		'default', true,
-		'getFunc', function() value = OhSnapDB[i][5] return OhSnapDB[i][5] end,
+		'description', 'Show caster name',
+		'default', OhSnap.Defaults[i][5],
+		'getFunc', function() return OhSnapDB[i][5] end,
 		'setFunc', function(value) OhSnapDB[i][5] = value; OhSnap:Update() end
 	)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -270)
 
 	local lock = self:MakeToggle(
 		'name', 'Icon',
-		'description', 'Enable spell icon',
-		'default', true,
-		'getFunc', function() value = OhSnapDB[i][6] return OhSnapDB[i][6] end,
+		'description', 'Show spell icon',
+		'default', OhSnap.Defaults[i][6],
+		'getFunc', function() return OhSnapDB[i][6] end,
 		'setFunc', function(value) OhSnapDB[i][6] = value; OhSnap:Update() end
 	)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -300)
 
 	local lock = self:MakeToggle(
 		'name', 'Spell',
-		'description', 'Enable spell name',
-		'default', false,
-		'getFunc', function() value = OhSnapDB[i][7] return OhSnapDB[i][7] end,
+		'description', 'Show spell name',
+		'default', OhSnap.Defaults[i][7],
+		'getFunc', function() return OhSnapDB[i][7] end,
 		'setFunc', function(value) OhSnapDB[i][7] = value; OhSnap:Update() end
 	)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -330)
 
-	local lock = self:MakeToggle(
-		'name', 'Comment / Target',
-		'description', 'Enable spell comment / target',
-		'default', true,
-		'getFunc', function() value = OhSnapDB[i][8] return OhSnapDB[i][8] end,
-		'setFunc', function(value) OhSnapDB[i][8] = value; OhSnap:Update() end
-	)
-	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -360)
-
+	if i = 1 then
+		local lock = self:MakeToggle(
+			'name', 'Target',
+			'description', 'Show target name',
+			'default', OhSnap.Defaults[i][8],
+			'getFunc', function() return OhSnapDB[i][8] end,
+			'setFunc', function(value) OhSnapDB[i][8] = value; OhSnap:Update() end
+		)
+		lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -360)
+	else
+		local lock = self:MakeToggle(
+			'name', 'Comment',
+			'description', 'Show spell comment',
+			'default', OhSnap.Defaults[i][8],
+			'getFunc', function() return OhSnapDB[i][8] end,
+			'setFunc', function(value) OhSnapDB[i][8] = value; OhSnap:Update() end
+		)
+		lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -360)
+	end
 end
 
 LibSimpleOptions.AddOptionsPanel("OhSnap", function(self) Options(self, anchor) end)
