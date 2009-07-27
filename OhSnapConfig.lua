@@ -104,7 +104,7 @@ local function FontOptions(self,anchor,i)
 	)
 	lock:SetPoint("TOPLEFT", self, "TOPLEFT", 15, -330)
 
-	if i = 1 then
+	if i == 1 then
 		local lock = self:MakeToggle(
 			'name', 'Target',
 			'description', 'Show target name',

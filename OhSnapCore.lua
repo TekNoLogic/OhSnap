@@ -4,12 +4,13 @@ local rows = {}
 local guidmap = {}
 local uidcount = 0
 OhSnap.Defaults = {
-    [1] = {"Fonts\\FRIZQT__.TTF",24,"THICKOUTLINE",true,true,true,false,true},
-    [2] = {"Fonts\\FRIZQT__.TTF",18,"OUTLINE",true,true,true,false,true},
-    [3] = {"Fonts\\FRIZQT__.TTF",14,"OUTLINE",true,true,true,false,true},
-    [4] = {"Fonts\\FRIZQT__.TTF",11,"OUTLINE",true,true,true,false,true},
-    ["ShowAnchor"] = true,	
-    ["TestMode"] = false,
+	-- fontpath,size,outline,enabled,targetname,spellicon,spellname,comment
+	[1] = {"Fonts\\FRIZQT__.TTF",24,"THICKOUTLINE",true,true,true,true,true},
+	[2] = {"Fonts\\FRIZQT__.TTF",18,"OUTLINE",true,true,true,false,true},
+	[3] = {"Fonts\\FRIZQT__.TTF",14,"OUTLINE",true,true,true,false,true},
+	[4] = {"Fonts\\FRIZQT__.TTF",11,"OUTLINE",true,true,true,false,true},
+	["ShowAnchor"] = true,	
+	["TestMode"] = false,
 }
 
 if not OhSnapDB then OhSnapDB = OhSnap.Defaults end
@@ -178,7 +179,7 @@ local function unitscan(unit)
 					if not done[guid][spellname] then
 						local OhName = (v["multi"] and "") or (OhSnapDB[prio][5] and UnitName(unit):match("[^-]+")..": " or "")
 						local OhSpellicon = OhSnapDB[prio][6] and " |T"..select(3,UnitDebuff(unit, spellname))..":0|t " or ""
-						local OhSpellname = OhSnapDB[prio][7] and spellname.." "  or ""
+						local OhSpellname = OhSnapDB[prio][7] and "("..spellname..") "  or ""
 						local OhDescription = OhSnapDB[prio][8] and v.msg or ""
 						local message = OhName..OhSpellicon..OhSpellname..OhDescription
 						local uid = OhSnap:AddMessage(message,prio,0,1,0,1,select(6,UnitDebuff(unit,spellname)),select(7,UnitDebuff(unit,spellname)))
@@ -211,7 +212,7 @@ local function unitscan(unit)
 							local r,g,b = classcolor.r,classcolor.g,classcolor.b
 							local OhName = (v["multi"] and "") or (OhSnapDB[prio][5] and UnitName(unit):match("[^-]+")..": " or "")
 							local OhSpellicon = OhSnapDB[prio][6] and "|T"..select(3,UnitAura(unit, spellname))..":0|t " or ""
-							local OhSpellname = OhSnapDB[prio][7] and spellname.." " or ""
+							local OhSpellname = OhSnapDB[prio][7] and "("..spellname..") " or ""
 							local OhDescription = OhSnapDB[prio][8] and v.msg or ""
 							local message = OhName..OhSpellicon..OhSpellname..OhDescription
 							local uid = OhSnap:AddMessage(message,prio,r,g,b,1,select(6,UnitAura(unit,spellname)),select(7,UnitAura(unit,spellname)))
